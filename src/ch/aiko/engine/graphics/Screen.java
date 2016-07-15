@@ -13,11 +13,12 @@ import ch.aiko.engine.input.Input;
 public class Screen extends Canvas {
 
 	public int ups, fps, lastFPS, lastUPS, clearColor = 0xFF000000;
-	private boolean isRendering, isUpdating, isClearing = true;
-	private Thread renderThread = new Thread(() -> startRendering(), "RenderThread"), updateThread = new Thread(() -> startUpdating(60), "UpdateThread");
-	private PixelImage pixelImg;
-	private Renderer renderer;
-	private Input input;
+	protected boolean isRendering, isUpdating, isClearing = true;
+	protected Thread renderThread = new Thread(() -> startRendering(), "RenderThread"), updateThread = new Thread(() -> startUpdating(60), "UpdateThread");
+	protected PixelImage pixelImg;
+	protected Renderer renderer;
+	protected Input input;
+	protected boolean resetOffset = true;
 
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
 	public PrintStream ps = System.out;
@@ -93,8 +94,8 @@ public class Screen extends Canvas {
 		if (isClearing) renderer.clear(clearColor);
 
 		for (int i = lastRendered >= layers.size() ? layers.size() - 1 : lastRendered; i >= 0; i--) {
-			renderer.setOffset(0, 0);
-			if(layers.size() > i) layers.get(i).render(renderer);
+			if (resetOffset) renderer.setOffset(0, 0);
+			if (layers.size() > i) layers.get(i).render(renderer);
 		}
 
 		g.drawImage(pixelImg.img, 0, 0, getWidth(), getHeight(), null);
@@ -103,9 +104,13 @@ public class Screen extends Canvas {
 		bs.show();
 	}
 
+	public void setResetOffset(boolean b) {
+		resetOffset = b;
+	}
+
 	public final void preUpdate() {
 		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
-			if(layers.size() > i) layers.get(i).update(this);
+			if (layers.size() > i) layers.get(i).update(this);
 		}
 	}
 

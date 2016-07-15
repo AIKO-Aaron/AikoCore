@@ -23,7 +23,7 @@ public class Test {
 	private static boolean closed;
 	private static int index = 0;
 	private static int x, y, u = menuWidth;
-	private static int speed = 5;
+	private static int speed = 6;
 	private static Window w;
 	private static Layer l1, l2;
 
@@ -61,17 +61,6 @@ public class Test {
 	static int tileSize = 32;
 	
 	public static void render(Renderer r) {
-		for (int i = 0; i <= r.getWidth() / tileSize; i++) {
-			for (int j = 0; j <= r.getHeight() / tileSize; j++) {
-				//int index = i + j * r.getWidth() / 16;
-				//r.fillRect(i * 16, j * 16, 16, 16, colors.length > index ? colors[index] : 0xFFFF00FF);
-				
-				r.fillRect(i * tileSize, j * tileSize, tileSize, tileSize, rand.nextInt(0xFFFFFF) + 0xFF000000);
-			}
-		}
-		/**
-		 * for (int i = 0; i < r.getWidth() / 16 * r.getHeight() / 16; i++) { r.fillRect(i % (r.getWidth() / 16) * 16, i / (r.getWidth() / 16) * 16, 16, 16, colors[i]); }
-		 */
 		// if(c1 != null) c1.render(r);
 	}
 
