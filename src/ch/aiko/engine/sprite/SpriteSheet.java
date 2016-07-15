@@ -86,7 +86,7 @@ public class SpriteSheet {
 		x = x * spriteWidth + xOff;
 		y = y * spriteHeight + yOff;
 		Sprite s = new Sprite(img.getRGB(x, y, spriteWidth, spriteHeight, null, 0, spriteWidth), spriteWidth, spriteHeight).getScaledInstance(spriteWidth, spriteHeight).setSuper(this, xx, yy);
-		SpriteSerialization.addSprite(s, path, SpriteSerialization.INDEX++);
+		SpriteSerialization.addSprite(s, this, xx, yy, false, SpriteSerialization.INDEX++);
 		return s;
 	}
 
@@ -97,7 +97,7 @@ public class SpriteSheet {
 		int xx = (i / w);
 		int yy = (i % w);
 		Sprite s = new Sprite(img.getRGB(x, y, spriteWidth, spriteHeight, null, 0, spriteWidth), spriteWidth, spriteHeight).getScaledInstance(spriteWidth, spriteHeight).setSuper(this, xx, yy);
-		SpriteSerialization.addSprite(s, path, SpriteSerialization.INDEX++);
+		SpriteSerialization.addSprite(s, this, xx, yy, false, SpriteSerialization.INDEX++);
 		return s;
 	}
 
