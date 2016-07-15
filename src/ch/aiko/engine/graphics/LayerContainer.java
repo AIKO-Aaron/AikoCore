@@ -2,9 +2,9 @@ package ch.aiko.engine.graphics;
 
 import java.util.ArrayList;
 
-public abstract class LayerContainer extends Layer {
+public abstract class LayerContainer extends Layer implements Renderable, Updatable {
 
-	public static LayerContainer create(Renderable r, Updatable u, int layer, boolean stopsRender, boolean stopsUpdates) {
+	public static LayerContainer create(int layer, boolean stopsRender, boolean stopsUpdates) {
 		return new LayerContainer() {
 
 			@Override
@@ -18,16 +18,6 @@ public abstract class LayerContainer extends Layer {
 			}
 
 			@Override
-			public Updatable getUpdatable() {
-				return u;
-			}
-
-			@Override
-			public Renderable getRenderable() {
-				return r;
-			}
-
-			@Override
 			public int getLevel() {
 				return 0;
 			}
@@ -37,20 +27,24 @@ public abstract class LayerContainer extends Layer {
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
 	private int lastRendered, lastUpdated;
 
-	public void render(Renderer r) {
-		// getRenderable().render(r); // would cause overflow
+	public final void render(Renderer r) {
+		layerRender(r);
 		for (int i = lastRendered >= layers.size() ? layers.size() - 1 : lastRendered; i >= 0; i--) {
 			r.setOffset(0, 0);
 			if (layers.size() > i) layers.get(i).render(r);
 		}
 	}
 
-	public void update(Screen s) {
-		// getUpdatable().update(s); // would cause overflow
+	public final void update(Screen s) {
+		layerUpdate(s);
 		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
 			if (layers.size() > i) layers.get(i).update(s);
 		}
 	}
+	
+	public void layerRender(Renderer r) {}
+	public void layerUpdate(Screen s) {}
+
 
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
@@ -69,6 +63,14 @@ public abstract class LayerContainer extends Layer {
 		lastUpdated = getLowestUpdated();
 
 		return l;
+	}
+	
+	public Renderable getRenderable() {
+		return this;
+	}
+
+	public Updatable getUpdatable() {
+		return this;
 	}
 
 	public void removeLayer(Layer l) {
@@ -128,5 +130,4 @@ public abstract class LayerContainer extends Layer {
 		}
 		return startIndex;
 	}
-
 }

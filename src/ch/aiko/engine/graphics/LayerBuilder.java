@@ -42,7 +42,7 @@ public class LayerBuilder {
 	}
 	
 	public LayerContainer toContainer() {
-		return LayerContainer.create(r, u, layer, stopsRendering, stopsUpdating);
+		return LayerContainer.create(layer, stopsRendering, stopsUpdating);
 	}
 
 }
