@@ -85,7 +85,9 @@ public class SpriteSheet {
 		int yy = y;
 		x = x * spriteWidth + xOff;
 		y = y * spriteHeight + yOff;
-		return new Sprite(img.getRGB(x, y, spriteWidth, spriteHeight, null, 0, spriteWidth), spriteWidth, spriteHeight).getScaledInstance(spriteWidth, spriteHeight).setSuper(this, xx, yy);
+		Sprite s = new Sprite(img.getRGB(x, y, spriteWidth, spriteHeight, null, 0, spriteWidth), spriteWidth, spriteHeight).getScaledInstance(spriteWidth, spriteHeight).setSuper(this, xx, yy);
+		SpriteSerialization.addSprite(s, path, SpriteSerialization.INDEX++);
+		return s;
 	}
 
 	public Sprite getSprite(int i) {
@@ -94,7 +96,9 @@ public class SpriteSheet {
 		int y = (i / w) * spriteHeight + yOff;
 		int xx = (i / w);
 		int yy = (i % w);
-		return new Sprite(img.getRGB(x, y, spriteWidth, spriteHeight, null, 0, spriteWidth), spriteWidth, spriteHeight).getScaledInstance(spriteWidth, spriteHeight).setSuper(this, xx, yy);
+		Sprite s = new Sprite(img.getRGB(x, y, spriteWidth, spriteHeight, null, 0, spriteWidth), spriteWidth, spriteHeight).getScaledInstance(spriteWidth, spriteHeight).setSuper(this, xx, yy);
+		SpriteSerialization.addSprite(s, path, SpriteSerialization.INDEX++);
+		return s;
 	}
 
 	public int getSpriteWidth() {
