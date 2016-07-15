@@ -13,7 +13,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -31,7 +30,7 @@ class ImageUtil {
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(f);
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			System.err.println("File not found" + f.getAbsolutePath());
 		}
@@ -52,7 +51,7 @@ class ImageUtil {
 		BufferedImage img = null;
 		try {
 			img = ImageIO.read(ImageUtil.class.getResource(path));
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			System.err.println("File not found: " + path);
 		}

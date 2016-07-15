@@ -14,7 +14,7 @@ public class SpriteSheet {
 
 	public SpriteSheet(String imgpath, int sW, int sH) {
 		BufferedImage img = ImageUtil.loadImageInClassPath(imgpath);
-		
+
 		this.path = imgpath;
 		this.spriteWidth = sW;
 		this.spriteHeight = sH;
@@ -32,8 +32,25 @@ public class SpriteSheet {
 		this.spriteWidth = nW;
 		this.spriteHeight = nH;
 
-		int width = (int)((float)img.getWidth() / (float)sW * (float)nW);
+		int width = (int) ((float) img.getWidth() / (float) sW * (float) nW);
 		int height = (int) ((float) img.getHeight() / (float) sH * (float) nH);
+
+		img = ImageUtil.resize(img, width, height);
+
+		this.img = img;
+		pixels = new int[img.getWidth() * img.getHeight()];
+		pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+
+		entireWidth = img.getWidth();
+		entireHeight = img.getHeight();
+	}
+
+	public void scale(int nW, int nH) {
+		BufferedImage img = ImageUtil.loadImageInClassPath(path);
+		this.spriteWidth = nW;
+		this.spriteHeight = nH;
+		int width = (int) ((float) img.getWidth() / (float) spriteWidth * (float) nW);
+		int height = (int) ((float) img.getHeight() / (float) spriteHeight * (float) nH);
 
 		img = ImageUtil.resize(img, width, height);
 
