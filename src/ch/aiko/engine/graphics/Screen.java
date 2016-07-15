@@ -20,7 +20,7 @@ public class Screen extends Canvas {
 	private Input input;
 
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
-	public PrintStream ps;
+	public PrintStream ps = System.out;
 
 	private int lastRendered, lastUpdated;
 

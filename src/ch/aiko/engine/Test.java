@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ch.aiko.engine.geometry.Box;
 import ch.aiko.engine.geometry.Circle;
 import ch.aiko.engine.graphics.Layer;
 import ch.aiko.engine.graphics.Renderer;
@@ -28,7 +27,6 @@ public class Test {
 	private static Window w;
 	private static Layer l1, l2;
 
-	private static Box box2;
 	private static Circle c1;
 	private static float size = 5.0F;
 	private static int[] colors;
@@ -44,7 +42,7 @@ public class Test {
 		w.addLayer(l1);
 		w.addLayer(l2);
 
-		colors = new int[w.getScreen().getRenderer().getWidth() / 16 * w.getScreen().getRenderer().getHeight() / 16];
+		colors = new int[w.getScreen().getRenderer().getSize() / 256 + 16];
 		for (int i = 0; i < colors.length; i++) {
 			colors[i] = rand.nextInt(0xFFFFFF) + 0xFF000000;
 		}
@@ -52,19 +50,28 @@ public class Test {
 		r[0] = () -> test1();
 		r[numMenuItems - 1] = () -> closeMenu();
 
-		box2 = new Box(400, 150, 120, 250, 0xFFAAAAAA);
 		c1 = new Circle(25, 25, 25, 0xFF00CC00);
 
 		// w.getScreen().addRenderable(box2);
 		w.getScreen().addRenderable(c1, 10);
-		
+
 		closeMenu();
 	}
 
+	static int tileSize = 32;
+	
 	public static void render(Renderer r) {
-		for (int i = 0; i < r.getWidth() / 16 * r.getHeight() / 16; i++) {
-			r.fillRect(i % (r.getWidth() / 16) * 16, i / (r.getWidth() / 16) * 16, 16, 16, colors[i]);
+		for (int i = 0; i <= r.getWidth() / tileSize; i++) {
+			for (int j = 0; j <= r.getHeight() / tileSize; j++) {
+				//int index = i + j * r.getWidth() / 16;
+				//r.fillRect(i * 16, j * 16, 16, 16, colors.length > index ? colors[index] : 0xFFFF00FF);
+				
+				r.fillRect(i * tileSize, j * tileSize, tileSize, tileSize, rand.nextInt(0xFFFFFF) + 0xFF000000);
+			}
 		}
+		/**
+		 * for (int i = 0; i < r.getWidth() / 16 * r.getHeight() / 16; i++) { r.fillRect(i % (r.getWidth() / 16) * 16, i / (r.getWidth() / 16) * 16, 16, 16, colors[i]); }
+		 */
 		// if(c1 != null) c1.render(r);
 	}
 

@@ -12,6 +12,7 @@ import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 
 import ch.aiko.engine.geometry.GeometryObject;
+import ch.aiko.pokemon.sprite.Sprite;
 
 public class Renderer {
 	private PixelImage pixelImg;
@@ -23,7 +24,7 @@ public class Renderer {
 		this.pixelImg = screen.getImage();
 		this.screen = screen;
 	}
-	
+
 	public void setHaveAlpha(boolean b) {
 		supportAlpha = b;
 	}
@@ -48,6 +49,10 @@ public class Renderer {
 		return pixelImg.getHeight();
 	}
 
+	public int getSize() {
+		return pixelImg.getWidth() * pixelImg.getHeight();
+	}
+
 	public int getRealWidth() {
 		return screen.getWidth();
 	}
@@ -63,7 +68,7 @@ public class Renderer {
 	public void fillRect(int x, int y, int w, int h, int col) {
 		x += xOffset;
 		y += yOffset;
-		if(!supportAlpha) col |= 0xFF000000;
+		if (!supportAlpha) col |= 0xFF000000;
 		for (int xx = x; xx <= x + w; xx++) {
 			for (int yy = y; yy <= y + h; yy++) {
 				pixelImg.setPixel(xx, yy, col);
@@ -83,6 +88,18 @@ public class Renderer {
 		}
 	}
 
+	public void drawSprite(Sprite s, int x, int y) {
+		int[] pixels = s.getPixels();
+		x += xOffset;
+		y += yOffset;
+		if (pixels == null) return;
+		for (int xx = 0; xx < s.getWidth() && xx + x < getWidth(); xx++) {
+			for (int yy = 0; yy < s.getHeight() && yy + y < getHeight(); yy++) {
+				if (((pixels[xx + yy * s.getWidth()] >> 24) & 0xFF) != 0) pixelImg.setPixel(xx + x, yy + y, pixels[xx + yy * s.getWidth()]);
+			}
+		}
+	}
+
 	public void drawText(String text, String font, int fontsize, int fontmodifiers, int x, int y, int col) {
 		Font f = new Font(font, fontmodifiers, fontsize);
 		drawText(text, f, x, y, col);
@@ -91,7 +108,7 @@ public class Renderer {
 	public void drawText(String text, Font f, int x, int y, int col) {
 		x += xOffset;
 		y += yOffset;
-		if(!supportAlpha) col |= 0xFF000000;
+		if (!supportAlpha) col |= 0xFF000000;
 		FontMetrics metrics = screen.getGraphics().getFontMetrics(f);
 		Rectangle2D r = metrics.getStringBounds(text, screen.getGraphics());
 		BufferedImage img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) r.getWidth(), (int) r.getHeight() * 2, Transparency.TRANSLUCENT);
@@ -105,7 +122,7 @@ public class Renderer {
 	public void drawRect(int x, int y, int w, int h, int color) {
 		x += xOffset;
 		y += yOffset;
-		if(!supportAlpha) color |= 0xFF000000;
+		if (!supportAlpha) color |= 0xFF000000;
 		for (int i = 0; i < w; i++) {
 			pixelImg.setPixel(x + i, y, color);
 			pixelImg.setPixel(x + i, y + h, color);
@@ -119,7 +136,7 @@ public class Renderer {
 	public void drawRect(int x, int y, int w, int h, int color, int lw) {
 		x += xOffset;
 		y += yOffset;
-		if(!supportAlpha) color |= 0xFF000000;
+		if (!supportAlpha) color |= 0xFF000000;
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < lw; j++) {
 				pixelImg.setPixel(x + i, y + j, color);
@@ -137,7 +154,7 @@ public class Renderer {
 	public void fillCircle(int x, int y, int r, int color) {
 		x += xOffset;
 		y += yOffset;
-		if(!supportAlpha) color |= 0xFF000000;
+		if (!supportAlpha) color |= 0xFF000000;
 		for (int xx = x - r; xx <= x + r; xx++) {
 			for (int yy = y - r; yy <= y + r; yy++) {
 				if ((xx - x) * (xx - x) + (yy - y) * (yy - y) <= r * r) pixelImg.setPixel(xx, yy, color);
