@@ -38,7 +38,7 @@ public abstract class LayerContainer extends Layer {
 	private int lastRendered, lastUpdated;
 
 	public void render(Renderer r) {
-		getRenderable().render(r);
+		// getRenderable().render(r); // would cause overflow
 		for (int i = lastRendered >= layers.size() ? layers.size() - 1 : lastRendered; i >= 0; i--) {
 			r.setOffset(0, 0);
 			if (layers.size() > i) layers.get(i).render(r);
@@ -46,7 +46,7 @@ public abstract class LayerContainer extends Layer {
 	}
 
 	public void update(Screen s) {
-		getUpdatable().update(s);
+		// getUpdatable().update(s); // would cause overflow
 		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
 			if (layers.size() > i) layers.get(i).update(s);
 		}
