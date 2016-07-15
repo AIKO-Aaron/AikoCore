@@ -26,11 +26,12 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
 	private int lastRendered, lastUpdated;
+	protected boolean resetOffset = true;
 
 	public final void render(Renderer r) {
 		layerRender(r);
 		for (int i = lastRendered >= layers.size() ? layers.size() - 1 : lastRendered; i >= 0; i--) {
-			r.setOffset(0, 0);
+			if(resetOffset) r.setOffset(0, 0);
 			if (layers.size() > i) layers.get(i).render(r);
 		}
 	}
