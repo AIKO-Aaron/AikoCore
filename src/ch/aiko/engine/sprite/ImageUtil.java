@@ -1,4 +1,4 @@
-package ch.aiko.pokemon.sprite;
+package ch.aiko.engine.sprite;
 
 import java.awt.AWTException;
 import java.awt.Color;

@@ -12,7 +12,7 @@ import java.awt.image.DataBufferInt;
 import java.util.Arrays;
 
 import ch.aiko.engine.geometry.GeometryObject;
-import ch.aiko.pokemon.sprite.Sprite;
+import ch.aiko.engine.sprite.Sprite;
 
 public class Renderer {
 	private PixelImage pixelImg;
