@@ -16,12 +16,16 @@ import ch.aiko.engine.geometry.GeometryObject;
 public class Renderer {
 	private PixelImage pixelImg;
 	private Screen screen;
-
+	private boolean supportAlpha = true;
 	private int xOffset, yOffset;
 
 	protected Renderer(Screen screen) {
 		this.pixelImg = screen.getImage();
 		this.screen = screen;
+	}
+	
+	public void setHaveAlpha(boolean b) {
+		supportAlpha = b;
 	}
 
 	public void clear() {
@@ -59,6 +63,7 @@ public class Renderer {
 	public void fillRect(int x, int y, int w, int h, int col) {
 		x += xOffset;
 		y += yOffset;
+		if(!supportAlpha) col |= 0xFF000000;
 		for (int xx = x; xx <= x + w; xx++) {
 			for (int yy = y; yy <= y + h; yy++) {
 				pixelImg.setPixel(xx, yy, col);
@@ -86,6 +91,7 @@ public class Renderer {
 	public void drawText(String text, Font f, int x, int y, int col) {
 		x += xOffset;
 		y += yOffset;
+		if(!supportAlpha) col |= 0xFF000000;
 		FontMetrics metrics = screen.getGraphics().getFontMetrics(f);
 		Rectangle2D r = metrics.getStringBounds(text, screen.getGraphics());
 		BufferedImage img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) r.getWidth(), (int) r.getHeight() * 2, Transparency.TRANSLUCENT);
@@ -99,6 +105,7 @@ public class Renderer {
 	public void drawRect(int x, int y, int w, int h, int color) {
 		x += xOffset;
 		y += yOffset;
+		if(!supportAlpha) color |= 0xFF000000;
 		for (int i = 0; i < w; i++) {
 			pixelImg.setPixel(x + i, y, color);
 			pixelImg.setPixel(x + i, y + h, color);
@@ -112,6 +119,7 @@ public class Renderer {
 	public void drawRect(int x, int y, int w, int h, int color, int lw) {
 		x += xOffset;
 		y += yOffset;
+		if(!supportAlpha) color |= 0xFF000000;
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < lw; j++) {
 				pixelImg.setPixel(x + i, y + j, color);
@@ -129,6 +137,7 @@ public class Renderer {
 	public void fillCircle(int x, int y, int r, int color) {
 		x += xOffset;
 		y += yOffset;
+		if(!supportAlpha) color |= 0xFF000000;
 		for (int xx = x - r; xx <= x + r; xx++) {
 			for (int yy = y - r; yy <= y + r; yy++) {
 				if ((xx - x) * (xx - x) + (yy - y) * (yy - y) <= r * r) pixelImg.setPixel(xx, yy, color);
