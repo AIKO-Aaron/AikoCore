@@ -18,7 +18,7 @@ public class Renderer {
 	private Screen screen;
 
 	private int xOffset, yOffset;
-	
+
 	protected Renderer(Screen screen) {
 		this.pixelImg = screen.getImage();
 		this.screen = screen;
@@ -30,6 +30,10 @@ public class Renderer {
 
 	public void clear(int color) {
 		Arrays.fill(pixelImg.getPixels(), color);
+	}
+
+	public int[] getPixels() {
+		return pixelImg.getPixels();
 	}
 
 	public int getWidth() {
@@ -150,7 +154,7 @@ public class Renderer {
 		xOffset = i;
 		yOffset = j;
 	}
-	
+
 	public void addOffset(int i, int j) {
 		xOffset += i;
 		yOffset += j;
