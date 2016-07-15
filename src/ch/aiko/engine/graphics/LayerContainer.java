@@ -34,6 +34,7 @@ public abstract class LayerContainer extends Layer {
 	
 	public void render(Renderer r) {
 		getRenderable().render(r);
+		
 	}
 
 	public void update(Screen s) {
