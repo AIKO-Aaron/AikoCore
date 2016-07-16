@@ -213,6 +213,7 @@ public class Screen extends Canvas {
 	 */
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
+		l.setParent(null);
 		if (layers.size() <= 0) {
 			layers.add(l);
 		} else {
@@ -273,6 +274,44 @@ public class Screen extends Canvas {
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).getUpdatable() == r) layers.remove(i);
 		}
+	}
+
+	/**
+	 * Searches for a layer with the renderable r
+	 * 
+	 * @param r
+	 *            The renderable of the layer
+	 * @return The layer or null if no layer was found
+	 */
+	public Layer getLayer(Renderable r) {
+		for (int i = 0; i < layers.size(); i++) {
+			Layer l = layers.get(i);
+			if (l.getRenderable() == r) return l;
+			if (l instanceof LayerContainer) {
+				Layer found = ((LayerContainer) l).getLayer(r);
+				if (found != null) return found;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Searches for a layer with the updatable u
+	 * 
+	 * @param u
+	 *            The updatable of the layer
+	 * @return The layer or null if no layer was found
+	 */
+	public Layer getLayer(Updatable u) {
+		for (int i = 0; i < layers.size(); i++) {
+			Layer l = layers.get(i);
+			if (l.getUpdatable() == u) return l;
+			if (l instanceof LayerContainer) {
+				Layer found = ((LayerContainer) l).getLayer(u);
+				if (found != null) return found;
+			}
+		}
+		return null;
 	}
 
 	public Input getInput() {

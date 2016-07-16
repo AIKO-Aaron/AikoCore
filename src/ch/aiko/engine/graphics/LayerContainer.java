@@ -49,6 +49,7 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
+		l.setParent(this);
 		if (layers.size() <= 0) {
 			layers.add(l);
 		} else {
@@ -130,5 +131,31 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 			++startIndex;
 		}
 		return startIndex;
+	}
+	
+	/**
+	 * Searches for a layer with the renderable r
+	 * 
+	 * @param r The renderable of the layer
+	 * @return The layer or null if no layer was found
+	 */
+	public Layer getLayer(Renderable r){
+		for (int i = 0; i < layers.size(); i++) {
+			if (layers.get(i).getRenderable() == r) return layers.get(i);
+		}
+		return null;
+	}
+	
+	/**
+	 * Searches for a layer with the updatable u
+	 * 
+	 * @param u The updatable of the layer
+	 * @return The layer or null if no layer was found
+	 */
+	public Layer getLayer(Updatable u){
+		for (int i = 0; i < layers.size(); i++) {
+			if (layers.get(i).getUpdatable() == u) return layers.get(i);
+		}
+		return null;
 	}
 }

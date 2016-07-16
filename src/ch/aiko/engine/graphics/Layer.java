@@ -27,16 +27,22 @@ public abstract class Layer {
 			public void render(Renderer renderer) {
 				r.render(renderer);
 			}
-			
+
 			public void update(Screen screen) {
 				u.update(screen);
 			}
 		};
 	}
+
 	private Layer parent;
-	
-	public Layer() {parent = null;}
-	public Layer(Layer parent) {this.parent = parent;}
+
+	public Layer() {
+		parent = null;
+	}
+
+	public Layer(Layer parent) {
+		this.parent = parent;
+	}
 
 	/**
 	 * Wether or not the layer is inside another layer (LayerContainer) or not (Screen)
@@ -46,17 +52,20 @@ public abstract class Layer {
 	public boolean isSubLayer() {
 		return parent != null;
 	}
-	
+
 	/**
-	 * Only works if parent is not a screen
-	 * In general: only works if this layer is inside a layercontainer
+	 * Only works if parent is not a screen In general: only works if this layer is inside a layercontainer
 	 * 
 	 * @return The parent if available
 	 */
 	public Layer getParent() {
 		return parent;
 	}
-	
+
+	public void setParent(Layer parent) {
+		this.parent = parent;
+	}
+
 	public abstract Renderable getRenderable();
 
 	public abstract Updatable getUpdatable();
