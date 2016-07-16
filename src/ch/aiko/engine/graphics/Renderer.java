@@ -49,7 +49,7 @@ public class Renderer {
 		pixelImg = new PixelImage(pixelImg.getWidth() * x, pixelImg.getHeight() * y);
 		screen.pixelImg = pixelImg;
 	}
-	
+
 	public int getHeight() {
 		return (int) pixelImg.getHeight();
 	}
@@ -189,5 +189,13 @@ public class Renderer {
 	public void addOffset(int i, int j) {
 		xOffset += i;
 		yOffset += j;
+	}
+
+	public int getXOffset() {
+		return xOffset;
+	}
+
+	public int getYOffset() {
+		return yOffset;
 	}
 }

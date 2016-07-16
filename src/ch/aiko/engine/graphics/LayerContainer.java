@@ -79,6 +79,14 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		return null;
 	}
 	
+	public ArrayList<Layer> getLayers(String name) {
+		ArrayList<Layer> ret = new ArrayList<Layer>();
+		for (int i = layers.size() - 1; i >= 0; i--) {
+			if (layers.get(i).getName().equals(name)) ret.add(layers.get(i));
+		}
+		return ret;
+	}
+	
 	public Renderable getRenderable() {
 		return this;
 	}
@@ -89,6 +97,8 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 
 	public void removeLayer(Layer l) {
 		if (layers.contains(l)) layers.remove(l);
+		lastRendered = getLowestRendered();
+		lastUpdated = getLowestUpdated();
 	}
 
 	public Layer addRenderable(Renderable r) {
@@ -119,12 +129,16 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).getRenderable() == r) layers.remove(i);
 		}
+		lastRendered = getLowestRendered();
+		lastUpdated = getLowestUpdated();
 	}
 
 	public void removeUpdatable(Updatable r) {
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).getUpdatable() == r) layers.remove(i);
 		}
+		lastRendered = getLowestRendered();
+		lastUpdated = getLowestUpdated();
 	}
 
 	public int getLowestRendered() {
