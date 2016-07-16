@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public abstract class LayerContainer extends Layer implements Renderable, Updatable {
 	
-	public static LayerContainer create(int layer, boolean stopsRender, boolean stopsUpdates) {
+	public static LayerContainer create(int layer, String name, boolean stopsRender, boolean stopsUpdates) {
 		return new LayerContainer() {
 
 			@Override
@@ -20,6 +20,11 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 			@Override
 			public int getLevel() {
 				return 0;
+			}
+
+			@Override
+			public String getName() {
+				return name;
 			}
 		};
 	}
@@ -65,6 +70,13 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		lastUpdated = getLowestUpdated();
 
 		return l;
+	}
+	
+	public Layer getTopLayer(String name) {
+		for (int i = layers.size() - 1; i >= 0; i--) {
+			if (layers.get(i).getName().equals(name)) return layers.get(i);
+		}
+		return null;
 	}
 	
 	public Renderable getRenderable() {

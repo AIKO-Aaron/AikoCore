@@ -231,6 +231,13 @@ public class Screen extends Canvas {
 		return l;
 	}
 
+	public Layer getTopLayer(String name) {
+		for (int i = layers.size() - 1; i >= 0; i--) {
+			if (layers.get(i).getName().equals(name)) return layers.get(i);
+		}
+		return null;
+	}
+
 	/**
 	 * Remove the layer l from the stack, so it doesn't get rendered and updated anymore
 	 * 

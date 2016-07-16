@@ -1,14 +1,24 @@
 package ch.aiko.engine.graphics;
 
+import java.util.Random;
+
 public class LayerBuilder {
+
+	private final Random rand = new Random();
 
 	private Renderable r = (Renderer r) -> nul();
 	private Updatable u = (Screen s) -> nul();
 	private int layer;
+	private String name = "";
 	private boolean stopsRendering = false;
 	private boolean stopsUpdating = false;
 
-	public LayerBuilder() {}
+	public LayerBuilder() {
+		int nameLength = rand.nextInt(16);
+		while (nameLength-- > 0) {
+			name += (char) rand.nextInt(Character.MAX_VALUE);
+		}
+	}
 
 	private void nul() {}
 
@@ -36,13 +46,18 @@ public class LayerBuilder {
 		this.stopsUpdating = stop;
 		return this;
 	}
+	
+	public LayerBuilder setName(String name) {
+		this.name = name;
+		return this;
+	}
 
 	public Layer toLayer() {
-		return Layer.createLayer(r, u, layer, stopsRendering, stopsUpdating);
+		return Layer.createLayer(r, u, layer, name, stopsRendering, stopsUpdating);
 	}
-	
+
 	public LayerContainer toContainer() {
-		return LayerContainer.create(layer, stopsRendering, stopsUpdating);
+		return LayerContainer.create(layer, name, stopsRendering, stopsUpdating);
 	}
 
 }

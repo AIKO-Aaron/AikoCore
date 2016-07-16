@@ -2,10 +2,25 @@ package ch.aiko.engine.graphics;
 
 public abstract class Layer {
 
-	public static Layer createLayer(Renderable r, Updatable u, int level, boolean stopsRendering, boolean stopsUpdating) {
+	/**
+	 * Creates a new Layer with the given parameters
+	 * 
+	 * @param r The Renderable (Drawing method)
+	 * @param u The Updatable (Update method)
+	 * @param level The position of this layer (top / bottom --> higher numbers are more on the top) can be negative
+	 * @param name The name of the Layer. If you want to find it in another object, it should be unique
+	 * @param stopsRendering If this layer prevents the lower layers from being rendered
+	 * @param stopsUpdating If this layer prevents the lower layers from being updated
+	 * @return
+	 */
+	public static Layer createLayer(Renderable r, Updatable u, int level, String name, boolean stopsRendering, boolean stopsUpdating) {
 		return new Layer() {
 			public int getLevel() {
 				return level;
+			}
+			
+			public String getName() {
+				return name;
 			}
 
 			public boolean stopsRendering() {
@@ -75,6 +90,8 @@ public abstract class Layer {
 	public abstract boolean stopsRendering();
 
 	public abstract boolean stopsUpdating();
+	
+	public abstract String getName();
 
 	public void render(Renderer r) {
 		getRenderable().render(r);
