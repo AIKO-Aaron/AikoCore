@@ -382,4 +382,12 @@ public class Screen extends Canvas {
 	public boolean popKeyPressed(int keyCode) {
 		return input.popKeyPressed(keyCode);
 	}
+	
+	public int getFrameWidth() {
+		return renderer.getWidth();
+	}
+	
+	public int getFrameHeight() {
+		return renderer.getHeight();
+	}
 }
