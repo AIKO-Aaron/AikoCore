@@ -7,6 +7,7 @@ import java.util.Random;
 
 import ch.aiko.engine.geometry.Circle;
 import ch.aiko.engine.graphics.Layer;
+import ch.aiko.engine.graphics.LayerBuilder;
 import ch.aiko.engine.graphics.Renderer;
 import ch.aiko.engine.graphics.Screen;
 import ch.aiko.engine.graphics.Window;
@@ -34,8 +35,12 @@ public class Test {
 	private static ArrayList<Circle> cir = new ArrayList<Circle>();
 
 	public static void main(String[] args) {
+		for(int i = 0; i< 26;i++) {
+			System.out.println((char)(i+97));
+		}
 		l1 = Layer.createLayer((Renderer r) -> render(r), (Screen s) -> update(s), 2, "Test1", false, false);
 		l2 = Layer.createLayer((Renderer r) -> render2(r), (Screen s) -> update2(s), 3, "test1", false, true);
+		System.out.println(new LayerBuilder().toLayer().getName());
 		w = new Window(960, 540, "Testing-window");
 		w.setClearing(true);
 		w.setClearColor(0xFFFFFFFF);
