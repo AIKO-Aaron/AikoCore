@@ -9,9 +9,12 @@ public class PixelImage {
 
 	private int[] pixels;
 	protected BufferedImage img;
+	private double width, height;
 	
-	public PixelImage(int width, int height) {
-		img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+	public PixelImage(double width, double height) {
+		img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) width, (int) height, Transparency.TRANSLUCENT);
+		this.width = width;
+		this.height = height;
 		pixels = ((DataBufferInt)(img.getRaster().getDataBuffer())).getData();
 	}
 	
@@ -30,11 +33,11 @@ public class PixelImage {
 	}
 	
 	
-	public int getWidth() {
-		return img.getWidth();
+	public double getWidth() {
+		return width;
 	}
 	
-	public int getHeight() {
-		return img.getHeight();
+	public double getHeight() {
+		return height;
 	}
 }

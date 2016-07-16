@@ -29,7 +29,6 @@ public class Screen extends Canvas {
 		setPreferredSize(new Dimension(width, height));
 		pixelImg = new PixelImage(width, height);
 		renderer = new Renderer(this);
-
 		this.input = new Input(this);
 
 		requestFocus();

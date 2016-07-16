@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -36,8 +37,6 @@ class ImageUtil {
 		}
 		return img;
 	}
-
-
 
 	/**
 	 * Second Method to load an Image in your ClassPath. Only use other when you have to!
@@ -309,10 +308,22 @@ class ImageUtil {
 	public static BufferedImage replaceColor(BufferedImage src, int oldCol, int newCol) {
 		int[] pixels = new int[src.getWidth() * src.getHeight()];
 		pixels = src.getRGB(0, 0, src.getWidth(), src.getHeight(), pixels, 0, src.getWidth());
-		for(int i = 0; i < pixels.length; i++) {
-			if(pixels[i] == oldCol) pixels[i] = newCol;
+		for (int i = 0; i < pixels.length; i++) {
+			if (pixels[i] == oldCol) pixels[i] = newCol;
 		}
 		src.setRGB(0, 0, src.getWidth(), src.getHeight(), pixels, 0, src.getWidth());
 		return src;
+	}
+
+	public static BufferedImage getPartOf(BufferedImage img, int left, int right, int top, int bottom) {
+		int width = img.getWidth() - right - left;
+		int height = img.getHeight() - top - bottom;
+
+		int[] pixels = new int[width * height];
+		img.getRGB(left, top, img.getWidth() - right - left, img.getHeight() - top - bottom, pixels, 0, width);
+		BufferedImage ret = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+		ret.setRGB(0, 0, width, height, pixels, 0, width);
+		
+		return ret;
 	}
 }

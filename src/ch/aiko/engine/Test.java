@@ -59,7 +59,7 @@ public class Test {
 	}
 
 	static int tileSize = 32;
-	
+
 	public static void render(Renderer r) {
 		// if(c1 != null) c1.render(r);
 	}
@@ -83,6 +83,9 @@ public class Test {
 		if (i.popKeyPressed(KeyEvent.VK_NUMPAD5)) y -= 1;
 		if (i.popKeyPressed(KeyEvent.VK_NUMPAD3)) x += 1;
 		if (i.popKeyPressed(KeyEvent.VK_NUMPAD1)) x -= 1;
+
+		if (i.popKeyPressed(KeyEvent.VK_L)) w.getScreen().getRenderer().scale(2, 2);
+		if (i.popKeyPressed(KeyEvent.VK_S)) w.getScreen().getRenderer().scale(0.5F, 0.5F);
 
 		if (i.isKeyPressed(KeyEvent.VK_B)) {
 			Circle c = (new Circle(rand.nextInt(960), rand.nextInt(540), 2 + rand.nextInt(5), rand.nextInt(0xFFFFFF) | 0xFF000000));

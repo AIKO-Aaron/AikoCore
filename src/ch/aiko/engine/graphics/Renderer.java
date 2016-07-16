@@ -42,15 +42,20 @@ public class Renderer {
 	}
 
 	public int getWidth() {
-		return pixelImg.getWidth();
+		return (int) pixelImg.getWidth();
 	}
 
+	public void scale(double x, double y) {
+		pixelImg = new PixelImage(pixelImg.getWidth() * x, pixelImg.getHeight() * y);
+		screen.pixelImg = pixelImg;
+	}
+	
 	public int getHeight() {
-		return pixelImg.getHeight();
+		return (int) pixelImg.getHeight();
 	}
 
 	public int getSize() {
-		return pixelImg.getWidth() * pixelImg.getHeight();
+		return (int) (pixelImg.getWidth() * pixelImg.getHeight());
 	}
 
 	public int getRealWidth() {
