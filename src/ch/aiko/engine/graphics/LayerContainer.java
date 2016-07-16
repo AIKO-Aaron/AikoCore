@@ -24,8 +24,8 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		};
 	}
 
-	private ArrayList<Layer> layers = new ArrayList<Layer>();
-	private int lastRendered, lastUpdated;
+	protected ArrayList<Layer> layers = new ArrayList<Layer>();
+	protected int lastRendered, lastUpdated;
 	protected boolean resetOffset = true;
 
 	public final void render(Renderer r) {

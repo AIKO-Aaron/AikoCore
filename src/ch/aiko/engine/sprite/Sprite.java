@@ -92,14 +92,14 @@ public class Sprite {
 	}
 
 	public Tile toTile(int x, int y) {
-		return new Tile(this, x, y, false);
+		return new Tile(this, x, y, 0);
 	}
 
-	public Tile toTile(int x, int y, int w, int h, boolean solid) {
+	public Tile toTile(int x, int y, int w, int h, int solid) {
 		return new Tile(this, x, y, solid);
 	}
 
-	public Tile toTile(int x, int y, boolean solid) {
+	public Tile toTile(int x, int y, int solid) {
 		return new Tile(this, x, y, solid);
 	}
 

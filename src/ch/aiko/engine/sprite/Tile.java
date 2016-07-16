@@ -9,28 +9,25 @@ public class Tile implements Renderable {
 
 	public Sprite sprite;
 	public int x, y;
-	public boolean solid;
+	public int layer; // 0 = ground, 1 = solid (most times) --> player can go up and down
 	public int w, h;
 
-	public static final String SOLID = "S";
-	public static final String NOT_SOLID = "V";
-
-	public Tile(Sprite sprite, int x, int y, boolean solid) {
+	public Tile(Sprite sprite, int x, int y, int layer) {
 		this.sprite = sprite;
 		this.x = x;
 		this.y = y;
-		this.solid = solid;
+		this.layer = layer;
 		if (sprite != null) {
 			this.w = sprite.getWidth();
 			this.h = sprite.getHeight();
 		}
 	}
 
-	public Tile(Sprite sprite, int x, int y, int w, int h, boolean solid) {
+	public Tile(Sprite sprite, int x, int y, int w, int h, int layer) {
 		this.sprite = sprite.setImage((BufferedImage) sprite.getImage().getScaledInstance(w, h, BufferedImage.SCALE_SMOOTH));
 		this.x = x;
 		this.y = y;
-		this.solid = solid;
+		this.layer = layer;
 		this.w = w;
 		this.h = h;
 	}
@@ -38,10 +35,11 @@ public class Tile implements Renderable {
 	public Tile(String t) {
 		if(t == null) {
 			sprite = new Sprite(0xFFFF00FF, 16, 16);
-			solid = false;
+			layer = 0;
 			return;
 		}
-		solid = t.substring(0, 1).equalsIgnoreCase(SOLID);
+		layer = Integer.parseInt(t.substring(0, t.indexOf("|")));
+		System.out.println(layer);
 		t = t.substring(t.indexOf("|") + 1);
 		boolean isSpriteSheet = t.substring(0, 1).equalsIgnoreCase(Sprite.SPRITE_SHEET);
 		t = t.substring(t.indexOf("|") + 1);
@@ -77,7 +75,7 @@ public class Tile implements Renderable {
 	}
 
 	public String toString() {
-		String t = (solid ? SOLID : NOT_SOLID) + "|" + sprite.serialize();
+		String t = layer + "|" + sprite.serialize();
 		return t;
 	}
 
