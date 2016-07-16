@@ -67,6 +67,7 @@ public class Test {
 
 	public static void render(Renderer r) {
 		// if(c1 != null) c1.render(r);
+		r.drawLine(0, 0, 100, 100, 0xFF00FF00, 5);
 	}
 
 	private static void test1() {

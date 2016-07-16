@@ -167,6 +167,34 @@ public class Renderer {
 		}
 	}
 
+	public void drawLine(int xs, int ys, int xe, int ye, int color) {
+		drawLine(xs, ys, xe, ys, color, 1);
+	}
+
+	public void drawLine(int xStart, int yStart, int xEnd, int yEnd, int color, int thickness) {
+		if (xStart > xEnd) {
+			int xx = xEnd;
+			xEnd = xStart;
+			xStart = xx;
+		}
+		if (yStart > yEnd) {
+			int yy = yEnd;
+			yEnd = yStart;
+			yStart = yy;
+		}
+		if (!supportAlpha) color |= 0xFF000000;
+		float m = (float) (yEnd - yStart) / (float) (xEnd - xStart);
+		float b = (float) yStart - (m * (float) xStart);
+		for (int xx = xStart; xx <= xEnd; xx++) {
+			float yfor = m * xx + b;
+			int l = thickness;
+			for (int i = thickness / 2; l > 0; i--) {
+				l--;	
+				pixelImg.setPixel(xx + xOffset, (int) yfor + i + yOffset, color);
+			}
+		}
+	}
+
 	public void drawGeometryObject(GeometryObject o) {
 		int x = o.getX();
 		int y = o.getY();
