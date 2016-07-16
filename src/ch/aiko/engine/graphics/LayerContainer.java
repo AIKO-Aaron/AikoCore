@@ -3,7 +3,7 @@ package ch.aiko.engine.graphics;
 import java.util.ArrayList;
 
 public abstract class LayerContainer extends Layer implements Renderable, Updatable {
-
+	
 	public static LayerContainer create(int layer, boolean stopsRender, boolean stopsUpdates) {
 		return new LayerContainer() {
 
