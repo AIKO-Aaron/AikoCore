@@ -358,4 +358,28 @@ public class Screen extends Canvas {
 	public void setClearing(boolean isClearing) {
 		this.isClearing = isClearing;
 	}
+
+	public int getMouseXInFrame() {
+		return input.getMouseX() * renderer.getWidth() / getWidth();
+	}
+
+	public int getMouseYInFrame() {
+		return input.getMouseY() * renderer.getHeight() / getHeight();
+	}
+
+	public boolean isMouseKeyPressed(int keyCode) {
+		return input.isMouseKeyPressed(keyCode);
+	}
+
+	public boolean popMouseKey(int keyCode) {
+		return input.popMouseKey(keyCode);
+	}
+	
+	public boolean isKeyPressed(int keyCode) {
+		return input.isKeyPressed(keyCode);
+	}
+
+	public boolean popKeyPressed(int keyCode) {
+		return input.popKeyPressed(keyCode);
+	}
 }
