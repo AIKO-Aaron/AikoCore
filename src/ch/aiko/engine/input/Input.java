@@ -48,9 +48,9 @@ public class Input {
 	}
 
 	public boolean popMouseKey(int keyCode) {
-		if (mouse_pressed.contains(keyCode)) {
-			while (mouse_pressed.contains(keyCode))
-				mouse_pressed.remove((Object) keyCode);
+		if (mouse_popped.contains(keyCode)) {
+			while (mouse_popped.contains(keyCode))
+				mouse_popped.remove((Object) keyCode);
 			return true;
 		}
 		return false;
