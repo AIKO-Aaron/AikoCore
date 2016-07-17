@@ -39,6 +39,7 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 			if(resetOffset) r.setOffset(0, 0);
 			if (layers.size() > i) layers.get(i).render(r);
 		}
+		postRender(r);
 	}
 
 	public final void update(Screen s) {
@@ -46,11 +47,13 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
 			if (layers.size() > i) layers.get(i).update(s);
 		}
+		postUpdate(s);
 	}
 	
 	public void layerRender(Renderer r) {}
 	public void layerUpdate(Screen s) {}
-
+	public void postRender(Renderer r) {}
+	public void postUpdate(Screen s) {}
 
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
