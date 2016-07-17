@@ -91,7 +91,7 @@ public class Screen extends Canvas {
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
-		
+
 		if (g instanceof Graphics2D) {
 			((Graphics2D) g).setComposite(AlphaComposite.Src);
 		}
@@ -260,6 +260,7 @@ public class Screen extends Canvas {
 	 * @param l
 	 */
 	public void removeLayer(Layer l) {
+		l.onClose();
 		if (layers.contains(l)) layers.remove(l);
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
@@ -291,7 +292,10 @@ public class Screen extends Canvas {
 
 	public void removeRenderable(Renderable r) {
 		for (int i = 0; i < layers.size(); i++) {
-			if (layers.get(i).getRenderable() == r) layers.remove(i);
+			if (layers.get(i).getRenderable() == r) {
+				layers.get(i).onClose();
+				layers.remove(i);
+			}
 		}
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
@@ -299,7 +303,10 @@ public class Screen extends Canvas {
 
 	public void removeUpdatable(Updatable r) {
 		for (int i = 0; i < layers.size(); i++) {
-			if (layers.get(i).getUpdatable() == r) layers.remove(i);
+			if (layers.get(i).getUpdatable() == r) {
+				layers.get(i).onClose();
+				layers.remove(i);
+			}
 		}
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();

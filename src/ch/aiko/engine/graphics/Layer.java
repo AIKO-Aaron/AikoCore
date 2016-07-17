@@ -106,5 +106,6 @@ public abstract class Layer {
 	}
 	
 	public void onOpen() {}
+	public void onClose() {}
 
 }
