@@ -104,5 +104,7 @@ public abstract class Layer {
 	public String toString() {
 		return "Level [level:" + getLevel() + "]";
 	}
+	
+	public void onOpen() {}
 
 }

@@ -234,6 +234,8 @@ public class Screen extends Canvas {
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
 
+		l.onOpen();
+
 		return l;
 	}
 
