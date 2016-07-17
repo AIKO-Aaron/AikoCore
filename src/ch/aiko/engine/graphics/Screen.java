@@ -1,8 +1,10 @@
 package ch.aiko.engine.graphics;
 
+import java.awt.AlphaComposite;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -89,6 +91,10 @@ public class Screen extends Canvas {
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
+		
+		if (g instanceof Graphics2D) {
+			((Graphics2D) g).setComposite(AlphaComposite.Src);
+		}
 
 		if (isClearing) renderer.clear(clearColor);
 
@@ -374,7 +380,7 @@ public class Screen extends Canvas {
 	public boolean popMouseKey(int keyCode) {
 		return input.popMouseKey(keyCode);
 	}
-	
+
 	public boolean isKeyPressed(int keyCode) {
 		return input.isKeyPressed(keyCode);
 	}
@@ -382,11 +388,11 @@ public class Screen extends Canvas {
 	public boolean popKeyPressed(int keyCode) {
 		return input.popKeyPressed(keyCode);
 	}
-	
+
 	public int getFrameWidth() {
 		return renderer.getWidth();
 	}
-	
+
 	public int getFrameHeight() {
 		return renderer.getHeight();
 	}

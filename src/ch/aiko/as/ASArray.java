@@ -108,7 +108,7 @@ public class ASArray {
 		array.setName(name);
 		array.type = Types.STRING;
 		array.count = data.length;
-		array.stringData = data.clone();
+		array.stringData = data;
 		array.updateSize();
 		return array;
 	}
