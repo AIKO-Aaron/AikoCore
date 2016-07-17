@@ -111,8 +111,6 @@ public class Renderer {
 	}
 
 	public void drawText(String text, Font f, int x, int y, int col) {
-		x += xOffset;
-		y += yOffset;
 		if (!supportAlpha) col |= 0xFF000000;
 		FontMetrics metrics = screen.getGraphics().getFontMetrics(f);
 		Rectangle2D r = metrics.getStringBounds(text, screen.getGraphics());
