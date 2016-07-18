@@ -322,4 +322,16 @@ public class Sprite {
 		}
 		return s;
 	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public int getSuperX() {
+		return xx;
+	}
+	
+	public int getSuperY() {
+		return yy;
+	}
 }
