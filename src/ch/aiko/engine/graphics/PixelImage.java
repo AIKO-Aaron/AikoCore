@@ -40,4 +40,8 @@ public class PixelImage {
 	public double getHeight() {
 		return height;
 	}
+
+	public void setPixels(int[] clearImage) {
+		pixels = clearImage;
+	}
 }

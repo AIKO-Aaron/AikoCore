@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -15,6 +17,8 @@ import ch.aiko.engine.geometry.GeometryObject;
 import ch.aiko.engine.sprite.Sprite;
 
 public class Renderer {
+
+	private int[] clearPixels;
 	private PixelImage pixelImg;
 	private Screen screen;
 	private boolean supportAlpha = true;
@@ -30,13 +34,43 @@ public class Renderer {
 	}
 
 	public void clear() {
-		Arrays.fill(pixelImg.getPixels(), 0xFF000000);
+		if (clearPixels == null) Arrays.fill(pixelImg.getPixels(), 0xFF000000);
+		else for (int i = 0; i < clearPixels.length; i++) {
+			int[] pi = pixelImg.getPixels();
+			pi[i] = clearPixels[i];
+		}
 	}
 
 	public void clear(int color) {
-		Arrays.fill(pixelImg.getPixels(), color);
+		if (clearPixels == null) Arrays.fill(pixelImg.getPixels(), color);
+		else for (int i = 0; i < clearPixels.length; i++) {
+			int[] pi = pixelImg.getPixels();
+			pi[i] = clearPixels[i];
+		}
 	}
 	
+	public void removeClearImage() {
+		clearPixels = null;
+	}
+
+	public void setClearImage(BufferedImage img) {
+		if (img.getWidth() != getWidth() || img.getHeight() != getHeight()) {
+			img = toBufferedImage(img.getScaledInstance(getWidth(), getHeight(), BufferedImage.SCALE_SMOOTH));
+		}
+		int[] pixels = new int[img.getWidth() * img.getHeight()];
+		pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+		clearPixels = pixels;
+	}
+
+	private BufferedImage toBufferedImage(Image img) {
+		if (img instanceof BufferedImage) return (BufferedImage) img;
+		BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D bGr = bimage.createGraphics();
+		bGr.drawImage(img, 0, 0, null);
+		bGr.dispose();
+		return bimage;
+	}
+
 	public int[] getPixels() {
 		return pixelImg.getPixels();
 	}
@@ -73,7 +107,7 @@ public class Renderer {
 	public void fillRect(int x, int y, int w, int h, int col) {
 		x += xOffset;
 		y += yOffset;
-		if(x + w < 0 || y + h < 0 || x > getWidth() || y > getHeight()) return;
+		if (x + w < 0 || y + h < 0 || x > getWidth() || y > getHeight()) return;
 		if (!supportAlpha) col |= 0xFF000000;
 		for (int xx = x; xx <= x + w; xx++) {
 			for (int yy = y; yy <= y + h; yy++) {
@@ -85,7 +119,7 @@ public class Renderer {
 	public void drawImage(BufferedImage img, int x, int y) {
 		x += xOffset;
 		y += yOffset;
-		if(x + img.getWidth() < 0 || y + img.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
+		if (x + img.getWidth() < 0 || y + img.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
 		int[] pixels = ((DataBufferInt) (img.getRaster().getDataBuffer())).getData();
 		if (pixels == null) img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
 		for (int xx = 0; xx < img.getWidth() && xx + x < getWidth(); xx++) {
@@ -94,11 +128,11 @@ public class Renderer {
 			}
 		}
 	}
-	
+
 	public void drawImage(BufferedImage img, int x, int y, boolean renderNoAlpha) {
 		x += xOffset;
 		y += yOffset;
-		if(x + img.getWidth() < 0 || y + img.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
+		if (x + img.getWidth() < 0 || y + img.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
 		int[] pixels = ((DataBufferInt) (img.getRaster().getDataBuffer())).getData();
 		if (pixels == null) img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
 		for (int xx = 0; xx < img.getWidth() && xx + x < getWidth(); xx++) {
@@ -112,7 +146,7 @@ public class Renderer {
 		int[] pixels = s.getPixels();
 		x += xOffset;
 		y += yOffset;
-		if(x + s.getWidth() < 0 || y + s.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
+		if (x + s.getWidth() < 0 || y + s.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
 		if (pixels == null) return;
 		for (int xx = 0; xx < s.getWidth() && xx + x < getWidth(); xx++) {
 			for (int yy = 0; yy < s.getHeight() && yy + y < getHeight(); yy++) {
@@ -203,7 +237,7 @@ public class Renderer {
 			float yfor = m * xx + b;
 			int l = thickness;
 			for (int i = thickness / 2; l > 0; i--) {
-				l--;	
+				l--;
 				pixelImg.setPixel(xx + xOffset, (int) yfor + i + yOffset, color);
 			}
 		}
