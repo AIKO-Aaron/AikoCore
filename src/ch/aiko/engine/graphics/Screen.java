@@ -405,4 +405,9 @@ public class Screen extends Canvas {
 	public int getFrameHeight() {
 		return renderer.getHeight();
 	}
+
+	public void removeAllLayers() {
+		layers.clear();
+		lastRendered = lastUpdated = 0;
+	}
 }

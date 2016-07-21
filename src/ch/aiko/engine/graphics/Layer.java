@@ -40,11 +40,11 @@ public abstract class Layer {
 			}
 
 			public void render(Renderer renderer) {
-				r.render(renderer);
+				if(r != null) r.render(renderer);
 			}
 
 			public void update(Screen screen) {
-				u.update(screen);
+				if(u != null) u.update(screen);
 			}
 		};
 	}
