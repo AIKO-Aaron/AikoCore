@@ -36,7 +36,7 @@ public class Renderer {
 	public void clear(int color) {
 		Arrays.fill(pixelImg.getPixels(), color);
 	}
-
+	
 	public int[] getPixels() {
 		return pixelImg.getPixels();
 	}
@@ -73,6 +73,7 @@ public class Renderer {
 	public void fillRect(int x, int y, int w, int h, int col) {
 		x += xOffset;
 		y += yOffset;
+		if(x + w < 0 || y + h < 0 || x > getWidth() || y > getHeight()) return;
 		if (!supportAlpha) col |= 0xFF000000;
 		for (int xx = x; xx <= x + w; xx++) {
 			for (int yy = y; yy <= y + h; yy++) {
@@ -84,6 +85,7 @@ public class Renderer {
 	public void drawImage(BufferedImage img, int x, int y) {
 		x += xOffset;
 		y += yOffset;
+		if(x + img.getWidth() < 0 || y + img.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
 		int[] pixels = ((DataBufferInt) (img.getRaster().getDataBuffer())).getData();
 		if (pixels == null) img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
 		for (int xx = 0; xx < img.getWidth() && xx + x < getWidth(); xx++) {
@@ -92,11 +94,25 @@ public class Renderer {
 			}
 		}
 	}
+	
+	public void drawImage(BufferedImage img, int x, int y, boolean renderNoAlpha) {
+		x += xOffset;
+		y += yOffset;
+		if(x + img.getWidth() < 0 || y + img.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
+		int[] pixels = ((DataBufferInt) (img.getRaster().getDataBuffer())).getData();
+		if (pixels == null) img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+		for (int xx = 0; xx < img.getWidth() && xx + x < getWidth(); xx++) {
+			for (int yy = 0; yy < img.getHeight() && yy + y < getHeight(); yy++) {
+				if (!renderNoAlpha && ((pixels[xx + yy * img.getWidth()] >> 24) & 0xFF) != 0) pixelImg.setPixel(xx + x, yy + y, pixels[xx + yy * img.getWidth()]);
+			}
+		}
+	}
 
 	public void drawSprite(Sprite s, int x, int y) {
 		int[] pixels = s.getPixels();
 		x += xOffset;
 		y += yOffset;
+		if(x + s.getWidth() < 0 || y + s.getHeight() < 0 || x > getWidth() || y > getHeight()) return;
 		if (pixels == null) return;
 		for (int xx = 0; xx < s.getWidth() && xx + x < getWidth(); xx++) {
 			for (int yy = 0; yy < s.getHeight() && yy + y < getHeight(); yy++) {
