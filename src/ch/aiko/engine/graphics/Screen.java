@@ -8,6 +8,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import ch.aiko.engine.input.Input;
 
@@ -15,12 +19,13 @@ import ch.aiko.engine.input.Input;
 public class Screen extends Canvas {
 
 	public int ups, fps, lastFPS, lastUPS, clearColor = 0xFF000000;
-	protected boolean isRendering, isUpdating, isClearing = true;
-	protected Thread renderThread = new Thread(() -> startRendering(), "RenderThread"), updateThread = new Thread(() -> startUpdating(60), "UpdateThread");
+	protected boolean isClearing = true, init = false;
 	protected PixelImage pixelImg;
 	protected Renderer renderer;
 	protected Input input;
 	protected boolean resetOffset = true;
+	protected ScheduledThreadPoolExecutor exe;
+	protected ScheduledFuture<?> update, render, disp;
 
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
 	public PrintStream ps = System.out;
@@ -37,53 +42,6 @@ public class Screen extends Canvas {
 		startThreads();
 	}
 
-	public void startRendering() {
-		if (isRendering) return;
-		isRendering = true;
-
-		while (isRendering) {
-			fps++;
-			preRender();
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void startUpdating(int d_fps) {
-		if (isUpdating) return;
-		isUpdating = true;
-
-		long second = 1000000000;
-		long wait_time = second / d_fps;
-		long lastTime = System.nanoTime();
-
-		while (!hasFocus()) {
-			requestFocus();
-		}
-
-		while (isUpdating) {
-			long start = System.nanoTime();
-			preUpdate();
-			ups++;
-			long end = System.nanoTime();
-			while (end - start < wait_time) {
-				end = System.nanoTime();
-			}
-			if (System.nanoTime() - lastTime >= second) {
-				lastFPS = fps;
-				lastUPS = ups;
-
-				ps.println("FPS: " + fps + ", UPS: " + ups);
-				fps = 0;
-				ups = 0;
-				lastTime = System.nanoTime();
-			}
-		}
-	}
-
 	public final void preRender() {
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
@@ -95,6 +53,8 @@ public class Screen extends Canvas {
 		if (g instanceof Graphics2D) {
 			((Graphics2D) g).setComposite(AlphaComposite.Src);
 		}
+
+		++fps;
 
 		if (isClearing) renderer.clear(clearColor);
 
@@ -114,6 +74,9 @@ public class Screen extends Canvas {
 	}
 
 	public final void preUpdate() {
+		if (!hasFocus() && !init) requestFocus();
+		else if (!init) init = true;
+		++ups;
 		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
 			if (layers.size() > i) layers.get(i).update(this);
 		}
@@ -172,8 +135,17 @@ public class Screen extends Canvas {
 	 * @return the Screen, so you can keep modifying it
 	 */
 	public Screen startThreads() {
-		renderThread.start();
-		updateThread.start();
+		ScheduledThreadPoolExecutor exe = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(3);
+		update = exe.scheduleAtFixedRate(() -> preUpdate(), 0, 1000000000 / 60, TimeUnit.NANOSECONDS);
+		render = exe.scheduleAtFixedRate(() -> preRender(), 1, 1, TimeUnit.NANOSECONDS);
+		disp = exe.scheduleAtFixedRate(() -> {
+			lastFPS = fps;
+			lastUPS = ups;
+
+			ps.println("FPS: " + fps + ", UPS: " + ups);
+			fps = 0;
+			ups = 0;
+		}, 0, 1, TimeUnit.SECONDS);
 		return this;
 	}
 
@@ -181,8 +153,9 @@ public class Screen extends Canvas {
 	 * Stops the application from running and returns void
 	 */
 	public void stopThreads() {
-		isRendering = false;
-		isUpdating = false;
+		render.cancel(false);
+		update.cancel(false);
+		disp.cancel(true);
 	}
 
 	public PixelImage getImage() {
@@ -196,14 +169,6 @@ public class Screen extends Canvas {
 	public Screen setRenderer(Renderer renderer) {
 		this.renderer = renderer;
 		return this;
-	}
-
-	public boolean isRendering() {
-		return isRendering;
-	}
-
-	public boolean isUpdating() {
-		return isUpdating;
 	}
 
 	public void setPixelImage(PixelImage pixelImg) {
