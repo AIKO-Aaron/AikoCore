@@ -39,7 +39,12 @@ public class Screen extends Canvas {
 		this.input = new Input(this);
 
 		requestFocus();
-		startThreads();
+	}
+	
+	public static Screen createAnStart(int w, int h) {
+		Screen s = new Screen(w, h);
+		s.startThreads();
+		return s;
 	}
 
 	public final void preRender() {

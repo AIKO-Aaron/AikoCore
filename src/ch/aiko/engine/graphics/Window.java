@@ -19,6 +19,10 @@ public class Window extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+	}
+	
+	public void start() {
+		screen.startThreads();
 		setVisible(true);
 	}
 
@@ -33,8 +37,6 @@ public class Window extends JFrame {
 
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		setVisible(true);
 	}
 
 	public Window setScreen(Screen s) {
