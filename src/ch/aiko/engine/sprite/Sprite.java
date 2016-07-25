@@ -12,7 +12,7 @@ public class Sprite {
 	private BufferedImage img;
 	private int width, height;
 	private int x = 0, y = 0, xx, yy;
-	
+
 	public static final String SPRITE_SHEET = "P";
 	public static final String SINGLE_SPRITE = "S";
 
@@ -23,7 +23,7 @@ public class Sprite {
 		this.height = img.getHeight();
 		pixels = load();
 	}
-	
+
 	public Sprite(String imgpath) {
 		this.path = imgpath;
 		this.img = ImageUtil.loadImageInClassPath(imgpath);
@@ -62,7 +62,7 @@ public class Sprite {
 		img = img2;
 		return ((DataBufferInt) (img.getRaster().getDataBuffer())).getData();
 	}
-	
+
 	private void loadPixels() {
 		this.pixels = ((DataBufferInt) (img.getRaster().getDataBuffer())).getData();
 	}
@@ -72,7 +72,8 @@ public class Sprite {
 	}
 
 	public int[] getPixels() {
-		return pixels.clone();
+		loadPixels();
+		return pixels;
 	}
 
 	public int getWidth() {
@@ -282,7 +283,7 @@ public class Sprite {
 				int yCoord = yy + y;
 
 				if (xCoord >= 0 && xCoord < width && yCoord >= 0 && yCoord < height && s.getAlpha(xx, yy) != 0) {
-					//img.setRGB(xCoord, yCoord, s.getColor(xx, yy));
+					// img.setRGB(xCoord, yCoord, s.getColor(xx, yy));
 					pixels[xCoord + yCoord * width] = s.getColor(xx, yy);
 				}
 			}
@@ -297,11 +298,11 @@ public class Sprite {
 		}
 		return this;
 	}
-	
+
 	public SpriteSheet getSuper() {
 		return ss;
 	}
-	
+
 	public Sprite setSuper(SpriteSheet s, int x, int y) {
 		ss = s;
 		xx = x;
@@ -311,7 +312,7 @@ public class Sprite {
 
 	public String serialize() {
 		String s = "";
-		if(getSuper() != null) {
+		if (getSuper() != null) {
 			s += SPRITE_SHEET + "|";
 			s += getWidth() + "," + getHeight() + "|";
 			s += xx + "," + yy + "|";
@@ -322,15 +323,15 @@ public class Sprite {
 		}
 		return s;
 	}
-	
+
 	public String getPath() {
 		return path;
 	}
-	
+
 	public int getSuperX() {
 		return xx;
 	}
-	
+
 	public int getSuperY() {
 		return yy;
 	}

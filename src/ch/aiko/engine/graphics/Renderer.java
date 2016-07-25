@@ -23,6 +23,7 @@ public class Renderer {
 	private Screen screen;
 	private boolean supportAlpha = true;
 	private int xOffset, yOffset;
+	public boolean needsReset = true;
 
 	protected Renderer(Screen screen) {
 		this.pixelImg = screen.getImage();
@@ -34,6 +35,10 @@ public class Renderer {
 	}
 
 	public void clear() {
+		if (!needsReset) {
+			needsReset = true;
+			return;
+		}
 		if (clearPixels == null) Arrays.fill(pixelImg.getPixels(), 0xFF000000);
 		else for (int i = 0; i < clearPixels.length; i++) {
 			int[] pi = pixelImg.getPixels();
@@ -42,13 +47,17 @@ public class Renderer {
 	}
 
 	public void clear(int color) {
+		if (!needsReset) {
+			needsReset = true;
+			return;
+		}
 		if (clearPixels == null) Arrays.fill(pixelImg.getPixels(), color);
 		else for (int i = 0; i < clearPixels.length; i++) {
 			int[] pi = pixelImg.getPixels();
 			pi[i] = clearPixels[i];
 		}
 	}
-	
+
 	public void removeClearImage() {
 		clearPixels = null;
 	}
@@ -60,6 +69,14 @@ public class Renderer {
 		int[] pixels = new int[img.getWidth() * img.getHeight()];
 		pixels = img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
 		clearPixels = pixels;
+	}
+
+	public void setClearPixels(int[] pix) {
+		if (pix.length != getWidth() * getHeight()) {
+			System.err.println("Size doesn't match!");
+			return;
+		}
+		clearPixels = pix;
 	}
 
 	private BufferedImage toBufferedImage(Image img) {
