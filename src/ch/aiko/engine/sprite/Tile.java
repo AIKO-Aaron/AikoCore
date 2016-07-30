@@ -12,6 +12,10 @@ public class Tile implements Renderable {
 	public int layer; // 0 = ground, 1 = solid (most times) --> player can go up and down
 	public int w, h;
 
+	public boolean isSolid(int x, int y, int layer) {
+		return sprite.getAlpha(x, y) != 0 && layer < this.layer;
+	}
+
 	public Tile(Sprite sprite, int x, int y, int layer) {
 		this.sprite = sprite;
 		this.x = x;
@@ -33,7 +37,7 @@ public class Tile implements Renderable {
 	}
 
 	public Tile(String t) {
-		if(t == null) {
+		if (t == null) {
 			sprite = new Sprite(0xFFFF00FF, 16, 16);
 			layer = 0;
 			return;
@@ -43,7 +47,7 @@ public class Tile implements Renderable {
 		t = t.substring(t.indexOf("|") + 1);
 		boolean isSpriteSheet = t.substring(0, 1).equalsIgnoreCase(Sprite.SPRITE_SHEET);
 		t = t.substring(t.indexOf("|") + 1);
-		//System.out.println(t);
+		// System.out.println(t);
 		if (isSpriteSheet) {
 			int spw = Integer.parseInt(t.substring(0, t.indexOf(",")));
 			int sph = Integer.parseInt(t.substring(t.indexOf(",") + 1, t.indexOf("|")));
@@ -55,7 +59,7 @@ public class Tile implements Renderable {
 			sprite = new SpriteSheet(path, spw, sph).getSprite(sx, sy);
 		} else {
 			String path = t;
-			if(path == null || path.equalsIgnoreCase("null")) sprite = new Sprite(0xFFFF00FF, 16, 16);
+			if (path == null || path.equalsIgnoreCase("null")) sprite = new Sprite(0xFFFF00FF, 16, 16);
 			else sprite = new Sprite(path);
 		}
 
