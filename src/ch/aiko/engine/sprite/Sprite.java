@@ -198,49 +198,49 @@ public class Sprite {
 	public int getAlpha(int x, int y) {
 		int ret = pixels[x + y * width];
 		ret = (ret & 0xFF000000) >> 24;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getRed(int x, int y) {
 		int ret = pixels[x + y * width];
 		ret = (ret & 0x00FF0000) >> 16;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getGreen(int x, int y) {
 		int ret = pixels[x + y * width];
 		ret = (ret & 0x0000FF00) >> 8;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getBlue(int x, int y) {
 		int ret = pixels[x + y * width];
 		ret = (ret & 0x000000FF) >> 0;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getAlpha(int i) {
 		int ret = pixels[i];
 		ret = (ret & 0xFF000000) >> 24;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getRed(int i) {
 		int ret = pixels[i];
 		ret = (ret & 0x00FF0000) >> 16;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getGreen(int i) {
 		int ret = pixels[i];
 		ret = (ret & 0x0000FF00) >> 8;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getBlue(int i) {
 		int ret = pixels[i];
 		ret = (ret & 0x000000FF) >> 0;
-		return ret;
+		return ret & 0xFF;
 	}
 
 	public int getColor(int x, int y) {

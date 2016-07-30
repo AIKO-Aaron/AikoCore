@@ -13,7 +13,7 @@ public class Tile implements Renderable {
 	public int w, h;
 
 	public boolean isSolid(int x, int y, int layer) {
-		return sprite.getAlpha(x, y) != 0 && layer < this.layer;
+		return sprite.getAlpha(x, y) == 0xFF && layer < this.layer;
 	}
 
 	public Tile(Sprite sprite, int x, int y, int layer) {
