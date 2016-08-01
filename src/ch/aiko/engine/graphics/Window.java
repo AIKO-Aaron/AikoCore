@@ -23,6 +23,7 @@ public class Window extends JFrame {
 	
 	public void start() {
 		screen.startThreads();
+		screen.startCommandLineReader();
 		setVisible(true);
 	}
 

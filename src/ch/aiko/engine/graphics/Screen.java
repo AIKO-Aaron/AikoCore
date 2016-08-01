@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -13,12 +15,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import ch.aiko.engine.command.CommandHandler;
+import ch.aiko.engine.command.StopCommand;
 import ch.aiko.engine.input.Input;
 
 @SuppressWarnings("serial")
 public class Screen extends Canvas {
 
 	public int ups, fps, lastFPS, lastUPS, clearColor = 0xFF000000;
+	protected Thread commandLineReader;
 	protected boolean isClearing = true, init = false;
 	protected PixelImage pixelImg;
 	protected Renderer renderer;
@@ -37,11 +42,13 @@ public class Screen extends Canvas {
 		pixelImg = new PixelImage(width, height);
 		renderer = new Renderer(this);
 		this.input = new Input(this);
+		
+		new StopCommand().register();
 
 		requestFocus();
 	}
-	
-	public static Screen createAnStart(int w, int h) {
+
+	public static Screen createAndStart(int w, int h) {
 		Screen s = new Screen(w, h);
 		s.startThreads();
 		return s;
@@ -150,8 +157,29 @@ public class Screen extends Canvas {
 			ps.println("FPS: " + fps + ", UPS: " + ups);
 			fps = 0;
 			ups = 0;
-		}, 0, 1, TimeUnit.SECONDS);
+		} , 0, 1, TimeUnit.SECONDS);
 		return this;
+	}
+
+	public Screen startCommandLineReader() {
+		commandLineReader = new Thread(() -> {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			while (isVisible()) {
+				try {
+					String line = reader.readLine();
+					if (line == null || line.trim().replace(" ", "").equalsIgnoreCase("")) continue;
+					executeCommand(line, 5);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		commandLineReader.start();
+		return this;
+	}
+
+	public void executeCommand(String line, int perms) {
+		CommandHandler.performAction(line, perms, this);
 	}
 
 	/**

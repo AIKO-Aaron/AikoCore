@@ -61,6 +61,8 @@ public class Test {
 		w.getScreen().addRenderable(c1, 10);
 
 		closeMenu();
+		
+		w.start();
 	}
 
 	static int tileSize = 32;
