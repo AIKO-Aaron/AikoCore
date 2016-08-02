@@ -63,7 +63,7 @@ public class ASString {
 	}
 
 	public static ASString Create(String name, String text) {
-		return Create(name, text.toCharArray());
+		return Create(name, text == null ? "?".toCharArray() : text.toCharArray());
 	}
 
 	public static ASString deserialize(byte[] bytes, int pointer) {

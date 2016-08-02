@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ASDataBase {
@@ -149,6 +150,81 @@ public class ASDataBase {
 			System.err.println("Should be: " + CHECKSUM + " is " + checksum);
 			System.err.println("Checksum mismatch! Returning");
 			return null;
+		}
+
+		byte[] footer = readBytes(b, pointer, FOOTER.length);
+		if (new String(footer).equalsIgnoreCase(new String(FOOTER))) ;
+
+		return result;
+	}
+
+	public static ASDataBase createFromBytesTrim(byte[] b) {
+		int pointer = 0;
+		if (b == null) return null;
+		// Read Header
+		String Header = readString(b, pointer, HEADER.length);
+		if (HEADER == Header.getBytes()) {
+			System.err.println("Wrong header!");
+			return null;
+		}
+		pointer += HEADER.length;
+
+		final short version = readShort(b, pointer);
+		pointer += 2;
+
+		ASDataBase result = new ASDataBase();
+
+		// Read Container-type
+		byte containerType = getByte(b, pointer);
+		if (containerType != CONTAINER_TYPE) {
+			System.err.println("No DataBase at root!");
+			return null;
+		}
+		pointer++;
+
+		// Read namelength
+		result.nameLength = readShort(b, pointer);
+		pointer += 2;
+
+		// Read name with namelength in the result object
+		result.name = readString(b, pointer, result.nameLength).getBytes();
+		pointer += result.nameLength;
+
+		// Read stored size (of the file)
+		result.size = readInt(b, pointer);
+		if (b.length != result.size) {
+			b = Arrays.copyOf(b, result.size);
+		}
+		pointer += 4;
+
+		// Read the object count
+		result.objectCount = readShort(b, pointer);
+		pointer += 2;
+		// Read the objects
+
+		for (int i = 0; i < result.objectCount; i++) {
+			ASObject obj = ASObject.deserialize(b, pointer);
+			if (obj == null) continue;
+			result.objects.add(obj);
+			pointer += obj.getSize();
+		}
+
+		System.out.println(result.objectCount);
+		for (ASObject obj : result.objects) {
+			if (obj != null) System.out.println(obj.getName());
+		}
+
+		byte CHECKSUM = generateChecksum(b, 0, pointer, version);
+		byte checksum = readByte(b, pointer);
+		pointer++;
+
+		// System.out.println(checksum);
+		// System.out.println(CHECKSUM);
+		// System.out.println(checksum == CHECKSUM);
+
+		if (checksum != CHECKSUM) {
+			System.err.println("Should be: " + CHECKSUM + " is " + checksum);
+			System.err.println("Checksum mismatch! Continuing anyway!");
 		}
 
 		byte[] footer = readBytes(b, pointer, FOOTER.length);

@@ -1,14 +1,13 @@
 package ch.aiko.engine.sprite;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import ch.aiko.as.ASArray;
 import ch.aiko.as.ASDataBase;
 import ch.aiko.as.ASObject;
-import ch.aiko.engine.sprite.Sprite;
-import ch.aiko.engine.sprite.SpriteSheet;
 
 public class SpriteSerialization {
 
@@ -127,14 +126,22 @@ public class SpriteSerialization {
 	// ==========
 
 	public static int getSpriteID(Sprite s) {
-		for (Entry<Integer, Sprite> e : SPRITES.entrySet()) {
+		@SuppressWarnings("unchecked")
+		HashMap<Integer, Sprite> sprites = (HashMap<Integer, Sprite>) SPRITES.clone();
+		Iterator<Entry<Integer, Sprite>> i = sprites.entrySet().iterator();
+		while (i.hasNext()) {
+			Entry<Integer, Sprite> e = i.next();
 			if (e.getValue() == s) return e.getKey();
 		}
 		return 0;
 	}
 
 	public static int getSpriteSheetID(SpriteSheet s) {
-		for (Entry<Integer, SpriteSheet> e : SPRITE_SHEETS.entrySet()) {
+		@SuppressWarnings("unchecked")
+		HashMap<Integer, SpriteSheet> spriteSheets = (HashMap<Integer, SpriteSheet>) SPRITE_SHEETS.clone();
+		Iterator<Entry<Integer, SpriteSheet>> i = spriteSheets.entrySet().iterator();
+		while (i.hasNext()) {
+			Entry<Integer, SpriteSheet> e = i.next();
 			if (e.getValue() == s) return e.getKey();
 		}
 		return 0;

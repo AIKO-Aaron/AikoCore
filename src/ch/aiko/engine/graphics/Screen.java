@@ -42,7 +42,7 @@ public class Screen extends Canvas {
 		pixelImg = new PixelImage(width, height);
 		renderer = new Renderer(this);
 		this.input = new Input(this);
-		
+
 		new StopCommand().register();
 
 		requestFocus();
@@ -55,30 +55,34 @@ public class Screen extends Canvas {
 	}
 
 	public final void preRender() {
-		BufferStrategy bs = getBufferStrategy();
-		if (bs == null) {
-			if (isDisplayable()) createBufferStrategy(3);
-			return;
+		try {
+			BufferStrategy bs = getBufferStrategy();
+			if (bs == null) {
+				if (isDisplayable()) createBufferStrategy(3);
+				return;
+			}
+			Graphics g = bs.getDrawGraphics();
+
+			if (g instanceof Graphics2D) {
+				((Graphics2D) g).setComposite(AlphaComposite.Src);
+			}
+
+			++fps;
+
+			if (isClearing) renderer.clear(clearColor);
+
+			for (int i = lastRendered >= layers.size() ? layers.size() - 1 : lastRendered; i >= 0; i--) {
+				if (resetOffset) renderer.setOffset(0, 0);
+				if (layers.size() > i) layers.get(i).render(renderer);
+			}
+
+			g.drawImage(pixelImg.img, 0, 0, getWidth(), getHeight(), null);
+
+			g.dispose();
+			bs.show();
+		} catch (Throwable t) {
+			t.printStackTrace(ps);
 		}
-		Graphics g = bs.getDrawGraphics();
-
-		if (g instanceof Graphics2D) {
-			((Graphics2D) g).setComposite(AlphaComposite.Src);
-		}
-
-		++fps;
-
-		if (isClearing) renderer.clear(clearColor);
-
-		for (int i = lastRendered >= layers.size() ? layers.size() - 1 : lastRendered; i >= 0; i--) {
-			if (resetOffset) renderer.setOffset(0, 0);
-			if (layers.size() > i) layers.get(i).render(renderer);
-		}
-
-		g.drawImage(pixelImg.img, 0, 0, getWidth(), getHeight(), null);
-
-		g.dispose();
-		bs.show();
 	}
 
 	public void setResetOffset(boolean b) {
@@ -86,11 +90,15 @@ public class Screen extends Canvas {
 	}
 
 	public final void preUpdate() {
-		if (!hasFocus() && !init) requestFocus();
-		else if (!init) init = true;
-		++ups;
-		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
-			if (layers.size() > i) layers.get(i).update(this);
+		try {
+			if (!hasFocus() && !init) requestFocus();
+			else if (!init) init = true;
+			++ups;
+			for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
+				if (layers.size() > i) layers.get(i).update(this);
+			}
+		} catch (Throwable t) {
+			t.printStackTrace(ps);
 		}
 	}
 
@@ -170,7 +178,7 @@ public class Screen extends Canvas {
 					if (line == null || line.trim().replace(" ", "").equalsIgnoreCase("")) continue;
 					executeCommand(line, 5);
 				} catch (Exception e) {
-					e.printStackTrace();
+					e.printStackTrace(ps);
 				}
 			}
 		});
