@@ -7,6 +7,7 @@ public class Window extends JFrame {
 
 	private Screen screen;
 
+	@Deprecated
 	public Window(int w, int h, String title) {
 		setTitle(title);
 

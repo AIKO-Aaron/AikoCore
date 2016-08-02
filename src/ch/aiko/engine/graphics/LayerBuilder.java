@@ -7,12 +7,12 @@ public class LayerBuilder {
 	private final Random rand = new Random();
 
 	private Renderable r = (Renderer r) -> nul();
-	private Updatable u = (Screen s) -> nul();
+	private Updatable u = (Screen s, Layer l) -> nul();
 	private int layer;
 	private String name = "";
 	private boolean stopsRendering = false;
 	private boolean stopsUpdating = false;
-
+	
 	public LayerBuilder() {
 		int nameLength = rand.nextInt(10) + 5;
 		while (nameLength-- > 0) {

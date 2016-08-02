@@ -2,6 +2,8 @@ package ch.aiko.engine.graphics;
 
 import java.util.ArrayList;
 
+import ch.aiko.engine.input.Input;
+
 public abstract class LayerContainer extends Layer implements Renderable, Updatable {
 
 	public static LayerContainer create(int layer, String name, boolean stopsRender, boolean stopsUpdates) {
@@ -42,21 +44,21 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		postRender(r);
 	}
 
-	public final void update(Screen s) {
-		layerUpdate(s);
+	public final void update(Screen s, Layer l) {
+		layerUpdate(s, this);
 		for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
-			if (layers.size() > i) layers.get(i).update(s);
+			if (layers.size() > i) layers.get(i).update(s, layers.get(i));
 		}
-		postUpdate(s);
+		postUpdate(s, this);
 	}
 
 	public void layerRender(Renderer r) {}
 
-	public void layerUpdate(Screen s) {}
+	public void layerUpdate(Screen s, Layer l) {}
 
 	public void postRender(Renderer r) {}
 
-	public void postUpdate(Screen s) {}
+	public void postUpdate(Screen s, Layer l) {}
 
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
@@ -71,6 +73,8 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 				}
 			}
 		}
+		
+		l.setInput(new Input(input.screen));
 
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();

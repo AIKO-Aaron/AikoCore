@@ -35,13 +35,14 @@ public class Test {
 	private static ArrayList<Circle> cir = new ArrayList<Circle>();
 
 	public static void main(String[] args) {
-		for(int i = 0; i< 26;i++) {
-			System.out.println((char)(i+97));
+		for (int i = 0; i < 26; i++) {
+			System.out.println((char) (i + 97));
 		}
-		l1 = Layer.createLayer((Renderer r) -> render(r), (Screen s) -> update(s), 2, "Test1", false, false);
-		l2 = Layer.createLayer((Renderer r) -> render2(r), (Screen s) -> update2(s), 3, "test1", false, true);
+		Screen s1 = new Screen(960, 540);
+		l1 = Layer.createLayer((Renderer r) -> render(r), (Screen s, Layer l) -> update(s), 2, "Test1", false, false);
+		l2 = Layer.createLayer((Renderer r) -> render2(r), (Screen s, Layer l) -> update2(s), 3, "test1", false, true);
 		System.out.println(new LayerBuilder().toLayer().getName());
-		w = new Window(960, 540, "Testing-window");
+		w = new Window("Testing-window", s1);
 		w.setClearing(true);
 		w.setClearColor(0xFFFFFFFF);
 		w.addLayer(l1);
@@ -61,7 +62,7 @@ public class Test {
 		w.getScreen().addRenderable(c1, 10);
 
 		closeMenu();
-		
+
 		w.start();
 	}
 
@@ -81,7 +82,7 @@ public class Test {
 	}
 
 	public static void update(Screen r) {
-		Input i = r.getInput();
+		Input i = l1.getInput();
 		if (i.isKeyPressed(KeyEvent.VK_UP)) y += -speed;
 		if (i.isKeyPressed(KeyEvent.VK_DOWN)) y += speed;
 		if (i.isKeyPressed(KeyEvent.VK_LEFT)) x += -speed;
@@ -136,7 +137,7 @@ public class Test {
 	}
 
 	public static void update2(Screen s) {
-		if (s.getInput().popKeyPressed(KeyEvent.VK_ESCAPE)) closed = true;
+		if (l2.getInput().popKeyPressed(KeyEvent.VK_ESCAPE)) closed = true;
 		if (!closed) {
 			if (u > 0) u -= menuSpeed;
 			if (u < 0) u = 0;
@@ -155,10 +156,10 @@ public class Test {
 		texts[4] = "Balls: " + cir.size();
 		texts[5] = "Exit";
 
-		if (s.getInput().popKeyPressed(KeyEvent.VK_X)) closed = !closed;
-		if (s.getInput().popKeyPressed(KeyEvent.VK_DOWN)) index += (index >= numMenuItems - 1 ? -numMenuItems + 1 : 1);
-		if (s.getInput().popKeyPressed(KeyEvent.VK_UP)) index -= (index <= 0 ? -numMenuItems + 1 : 1);
-		if (s.getInput().popKeyPressed(KeyEvent.VK_ENTER) || s.getInput().popKeyPressed(KeyEvent.VK_SPACE)) {
+		if (l2.getInput().popKeyPressed(KeyEvent.VK_X)) closed = !closed;
+		if (l2.getInput().popKeyPressed(KeyEvent.VK_DOWN)) index += (index >= numMenuItems - 1 ? -numMenuItems + 1 : 1);
+		if (l2.getInput().popKeyPressed(KeyEvent.VK_UP)) index -= (index <= 0 ? -numMenuItems + 1 : 1);
+		if (l2.getInput().popKeyPressed(KeyEvent.VK_ENTER) || l2.getInput().popKeyPressed(KeyEvent.VK_SPACE)) {
 			if (r[index] != null) r[index].run();
 		}
 	}

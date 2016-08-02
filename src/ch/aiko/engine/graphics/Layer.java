@@ -1,16 +1,24 @@
 package ch.aiko.engine.graphics;
 
+import ch.aiko.engine.input.Input;
+
 public abstract class Layer {
 
 	/**
 	 * Creates a new Layer with the given parameters
 	 * 
-	 * @param r The Renderable (Drawing method)
-	 * @param u The Updatable (Update method)
-	 * @param level The position of this layer (top / bottom --> higher numbers are more on the top) can be negative
-	 * @param name The name of the Layer. If you want to find it in another object, it should be unique
-	 * @param stopsRendering If this layer prevents the lower layers from being rendered
-	 * @param stopsUpdating If this layer prevents the lower layers from being updated
+	 * @param r
+	 *            The Renderable (Drawing method)
+	 * @param u
+	 *            The Updatable (Update method)
+	 * @param level
+	 *            The position of this layer (top / bottom --> higher numbers are more on the top) can be negative
+	 * @param name
+	 *            The name of the Layer. If you want to find it in another object, it should be unique
+	 * @param stopsRendering
+	 *            If this layer prevents the lower layers from being rendered
+	 * @param stopsUpdating
+	 *            If this layer prevents the lower layers from being updated
 	 * @return
 	 */
 	public static Layer createLayer(Renderable r, Updatable u, int level, String name, boolean stopsRendering, boolean stopsUpdating) {
@@ -18,7 +26,7 @@ public abstract class Layer {
 			public int getLevel() {
 				return level;
 			}
-			
+
 			public String getName() {
 				return name;
 			}
@@ -40,22 +48,24 @@ public abstract class Layer {
 			}
 
 			public void render(Renderer renderer) {
-				if(r != null) r.render(renderer);
+				if (r != null) r.render(renderer);
 			}
 
-			public void update(Screen screen) {
-				if(u != null) u.update(screen);
+			public void update(Screen screen, Layer l) {
+				if (u != null) u.update(screen, l);
 			}
 		};
 	}
 
-	private Layer parent;
+	//protected Screen screen;
+	protected Layer parent;
+	protected Input input;
 
 	public Layer() {
 		parent = null;
 	}
 
-	public Layer(Layer parent) {
+	public Layer(Screen s, Layer parent) {
 		this.parent = parent;
 	}
 
@@ -90,22 +100,55 @@ public abstract class Layer {
 	public abstract boolean stopsRendering();
 
 	public abstract boolean stopsUpdating();
-	
+
 	public abstract String getName();
 
 	public void render(Renderer r) {
 		getRenderable().render(r);
 	}
 
-	public void update(Screen s) {
-		getUpdatable().update(s);
+	public void update(Screen s, Layer l) {
+		getUpdatable().update(s, l);
 	}
 
 	public String toString() {
 		return "Level [level:" + getLevel() + "]";
 	}
-	
+
 	public void onOpen() {}
+
 	public void onClose() {}
+
+	public int getMouseXInFrame(Screen screen) {
+		return input.getMouseX() * screen.getRenderer().getWidth() / screen.getWidth();
+	}
+
+	public int getMouseYInFrame(Screen screen) {
+		return input.getMouseY() * screen.getRenderer().getHeight() / screen.getHeight();
+	}
+
+	public boolean isMouseKeyPressed(int keyCode) {
+		return input.isMouseKeyPressed(keyCode);
+	}
+
+	public boolean popMouseKey(int keyCode) {
+		return input.popMouseKey(keyCode);
+	}
+
+	public boolean isKeyPressed(int keyCode) {
+		return input.isKeyPressed(keyCode);
+	}
+
+	public boolean popKeyPressed(int keyCode) {
+		return input.popKeyPressed(keyCode);
+	}
+
+	public Input getInput() {
+		return input;
+	}
+
+	public void setInput(Input input) {
+		this.input = input;
+	}
 
 }

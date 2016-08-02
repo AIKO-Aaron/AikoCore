@@ -27,7 +27,7 @@ public class Screen extends Canvas {
 	protected boolean isClearing = true, init = false;
 	protected PixelImage pixelImg;
 	protected Renderer renderer;
-	protected Input input;
+	// protected Input input;
 	protected boolean resetOffset = true;
 	protected ScheduledThreadPoolExecutor exe;
 	protected ScheduledFuture<?> update, render, disp;
@@ -41,7 +41,7 @@ public class Screen extends Canvas {
 		setPreferredSize(new Dimension(width, height));
 		pixelImg = new PixelImage(width, height);
 		renderer = new Renderer(this);
-		this.input = new Input(this);
+		//this.input = new Input(this);
 
 		new StopCommand().register();
 
@@ -95,7 +95,7 @@ public class Screen extends Canvas {
 			else if (!init) init = true;
 			++ups;
 			for (int i = lastUpdated >= layers.size() ? layers.size() - 1 : lastUpdated; i >= 0; i--) {
-				if (layers.size() > i) layers.get(i).update(this);
+				if (layers.size() > i) layers.get(i).update(this, layers.get(i));
 			}
 		} catch (Throwable t) {
 			t.printStackTrace(ps);
@@ -239,6 +239,8 @@ public class Screen extends Canvas {
 
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
+		
+		l.setInput(new Input(this));
 
 		l.onOpen();
 
@@ -356,14 +358,6 @@ public class Screen extends Canvas {
 		return null;
 	}
 
-	public Input getInput() {
-		return input;
-	}
-
-	public void setInput(Input input) {
-		this.input = input;
-	}
-
 	public int getClearColor() {
 		return clearColor;
 	}
@@ -379,31 +373,7 @@ public class Screen extends Canvas {
 	public void setClearing(boolean isClearing) {
 		this.isClearing = isClearing;
 	}
-
-	public int getMouseXInFrame() {
-		return input.getMouseX() * renderer.getWidth() / getWidth();
-	}
-
-	public int getMouseYInFrame() {
-		return input.getMouseY() * renderer.getHeight() / getHeight();
-	}
-
-	public boolean isMouseKeyPressed(int keyCode) {
-		return input.isMouseKeyPressed(keyCode);
-	}
-
-	public boolean popMouseKey(int keyCode) {
-		return input.popMouseKey(keyCode);
-	}
-
-	public boolean isKeyPressed(int keyCode) {
-		return input.isKeyPressed(keyCode);
-	}
-
-	public boolean popKeyPressed(int keyCode) {
-		return input.popKeyPressed(keyCode);
-	}
-
+	
 	public int getFrameWidth() {
 		return renderer.getWidth();
 	}

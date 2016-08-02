@@ -1,6 +1,5 @@
 package ch.aiko.engine.input;
 
-import java.awt.Canvas;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -12,17 +11,22 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 
+import ch.aiko.engine.graphics.Screen;
+
 public class Input {
 
+	public Screen screen;
 	private int mouseX, mouseY, mxos, myos, mouseWheel;
 	private ArrayList<Integer> mouse_pressed = new ArrayList<Integer>();
 	private ArrayList<Integer> mouse_popped = new ArrayList<Integer>();
 	private ArrayList<Integer> keys = new ArrayList<Integer>();
 	private ArrayList<Integer> keys_popped = new ArrayList<Integer>();
 
-	public Input(Canvas w) {
+	public Input(Screen w) {
 		listeners l = new listeners();
 
+		screen = w;
+		
 		w.addKeyListener(l);
 		w.addMouseListener(l);
 		w.addMouseMotionListener(l);
