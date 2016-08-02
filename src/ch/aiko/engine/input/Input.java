@@ -26,7 +26,7 @@ public class Input {
 		listeners l = new listeners();
 
 		screen = w;
-		
+
 		w.addKeyListener(l);
 		w.addMouseListener(l);
 		w.addMouseMotionListener(l);
@@ -46,7 +46,7 @@ public class Input {
 		}
 		return false;
 	}
-	
+
 	public boolean isMouseKeyPressed(int keyCode) {
 		return mouse_pressed.contains(keyCode);
 	}
@@ -75,11 +75,11 @@ public class Input {
 	public int getMouseYOnScreen() {
 		return myos;
 	}
-	
+
 	public int getMouseWheel() {
 		return mouseWheel;
 	}
-	
+
 	public int popMouseWheel() {
 		int m = mouseWheel;
 		mouseWheel = 0;
@@ -122,7 +122,10 @@ public class Input {
 			}
 		}
 
-		public void mouseReleased(MouseEvent e) {}
+		public void mouseReleased(MouseEvent e) {
+			if (mouse_pressed.contains(e.getButton())) mouse_pressed.remove((Object) e.getButton());
+			if (mouse_popped.contains(e.getButton())) mouse_popped.remove((Object) e.getButton());
+		}
 
 		public void mouseEntered(MouseEvent e) {}
 
