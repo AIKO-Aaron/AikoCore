@@ -132,7 +132,7 @@ public abstract class Layer {
 
 	public void onClose(Screen s) {
 		isOpen = false;
-		input.remove(s);
+		if (input != null) input.remove(s);
 	}
 
 	public void setNeedsInput(boolean b) {
