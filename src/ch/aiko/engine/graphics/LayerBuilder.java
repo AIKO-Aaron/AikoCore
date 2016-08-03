@@ -12,6 +12,7 @@ public class LayerBuilder {
 	private String name = "";
 	private boolean stopsRendering = false;
 	private boolean stopsUpdating = false;
+	private boolean needsInput;
 	
 	public LayerBuilder() {
 		int nameLength = rand.nextInt(10) + 5;
@@ -37,6 +38,11 @@ public class LayerBuilder {
 		this.layer = layer;
 		return this;
 	}
+	
+	public LayerBuilder setNeedsInput(boolean b) {
+		this.needsInput = b;
+		return this;
+	}
 
 	public LayerBuilder setStopsRendering(boolean stop) {
 		this.stopsRendering = stop;
@@ -54,11 +60,11 @@ public class LayerBuilder {
 	}
 
 	public Layer toLayer() {
-		return Layer.createLayer(r, u, layer, name, stopsRendering, stopsUpdating);
+		return Layer.createLayer(r, u, layer, name, stopsRendering, stopsUpdating, needsInput);
 	}
 
 	public LayerContainer toContainer() {
-		return LayerContainer.create(layer, name, stopsRendering, stopsUpdating);
+		return LayerContainer.create(layer, name, stopsRendering, stopsUpdating, needsInput);
 	}
 
 }

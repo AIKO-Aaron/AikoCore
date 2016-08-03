@@ -21,8 +21,8 @@ public abstract class Layer {
 	 *            If this layer prevents the lower layers from being updated
 	 * @return
 	 */
-	public static Layer createLayer(Renderable r, Updatable u, int level, String name, boolean stopsRendering, boolean stopsUpdating) {
-		return new Layer() {
+	public static Layer createLayer(Renderable r, Updatable u, int level, String name, boolean stopsRendering, boolean stopsUpdating, boolean needsInput) {
+		return new Layer(needsInput) {
 			public int getLevel() {
 				return level;
 			}
@@ -57,12 +57,18 @@ public abstract class Layer {
 		};
 	}
 
-	//protected Screen screen;
 	protected Layer parent;
 	protected Input input;
+	protected boolean isOpen = false;
+	protected boolean needsInput = true;
 
 	public Layer() {
 		parent = null;
+	}
+
+	public Layer(boolean needs) {
+		parent = null;
+		needsInput = needs;
 	}
 
 	public Layer(Screen s, Layer parent) {
@@ -119,28 +125,46 @@ public abstract class Layer {
 
 	public void onClose() {}
 
+	public void onOpen(Screen s) {
+		if (needsInput) input = new Input(s);
+		isOpen = true;
+	}
+
+	public void onClose(Screen s) {
+		isOpen = false;
+		input.remove(s);
+	}
+
+	public void setNeedsInput(boolean b) {
+		needsInput = b;
+	}
+
+	public boolean needsInput() {
+		return needsInput;
+	}
+
 	public int getMouseXInFrame(Screen screen) {
-		return input.getMouseX() * screen.getRenderer().getWidth() / screen.getWidth();
+		return input == null ? 0 : input.getMouseX() * screen.getRenderer().getWidth() / screen.getWidth();
 	}
 
 	public int getMouseYInFrame(Screen screen) {
-		return input.getMouseY() * screen.getRenderer().getHeight() / screen.getHeight();
+		return input == null ? 0 : input.getMouseY() * screen.getRenderer().getHeight() / screen.getHeight();
 	}
 
 	public boolean isMouseKeyPressed(int keyCode) {
-		return input.isMouseKeyPressed(keyCode);
+		return input == null ? false : input.isMouseKeyPressed(keyCode);
 	}
 
 	public boolean popMouseKey(int keyCode) {
-		return input.popMouseKey(keyCode);
+		return input == null ? false : input.popMouseKey(keyCode);
 	}
 
 	public boolean isKeyPressed(int keyCode) {
-		return input.isKeyPressed(keyCode);
+		return input == null ? false : input.isKeyPressed(keyCode);
 	}
 
 	public boolean popKeyPressed(int keyCode) {
-		return input.popKeyPressed(keyCode);
+		return input == null ? false : input.popKeyPressed(keyCode);
 	}
 
 	public Input getInput() {

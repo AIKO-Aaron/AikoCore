@@ -39,8 +39,8 @@ public class Test {
 			System.out.println((char) (i + 97));
 		}
 		Screen s1 = new Screen(960, 540);
-		l1 = Layer.createLayer((Renderer r) -> render(r), (Screen s, Layer l) -> update(s), 2, "Test1", false, false);
-		l2 = Layer.createLayer((Renderer r) -> render2(r), (Screen s, Layer l) -> update2(s), 3, "test1", false, true);
+		l1 = Layer.createLayer((Renderer r) -> render(r), (Screen s, Layer l) -> update(s), 2, "Test1", false, false, true);
+		l2 = Layer.createLayer((Renderer r) -> render2(r), (Screen s, Layer l) -> update2(s), 3, "test1", false, true, true);
 		System.out.println(new LayerBuilder().toLayer().getName());
 		w = new Window("Testing-window", s1);
 		w.setClearing(true);

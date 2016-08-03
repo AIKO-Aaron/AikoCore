@@ -6,29 +6,33 @@ import ch.aiko.engine.input.Input;
 
 public abstract class LayerContainer extends Layer implements Renderable, Updatable {
 
-	public static LayerContainer create(int layer, String name, boolean stopsRender, boolean stopsUpdates) {
-		return new LayerContainer() {
+	public static LayerContainer create(int layer, String name, boolean stopsRender, boolean stopsUpdates, boolean needsInput) {
+		return new LayerContainer(needsInput) {
 
-			@Override
 			public boolean stopsUpdating() {
 				return stopsUpdates;
 			}
 
-			@Override
 			public boolean stopsRendering() {
 				return stopsRender;
 			}
 
-			@Override
 			public int getLevel() {
 				return 0;
 			}
 
-			@Override
 			public String getName() {
 				return name;
 			}
 		};
+	}
+
+	public LayerContainer() {
+		super(true);
+	}
+
+	public LayerContainer(boolean needsInput) {
+		super(needsInput);
 	}
 
 	protected ArrayList<Layer> layers = new ArrayList<Layer>();
@@ -62,6 +66,7 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
+		if (input != null) l.onOpen(input.screen);
 		l.setParent(this);
 		if (layers.size() <= 0) {
 			layers.add(l);
@@ -73,13 +78,26 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 				}
 			}
 		}
-		
-		l.setInput(new Input(input.screen));
+
+		if (input != null && input.screen != null) l.setInput(new Input(input.screen));
 
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
 
 		return l;
+	}
+
+	public final void onOpen(Screen s) {
+		if (needsInput) input = new Input(s);
+		isOpen = true;
+		for (Layer l : layers)
+			if (l.needsInput) l.setInput(new Input(s));
+	}
+
+	public final void onClose(Screen s) {
+		for (Layer l : layers)
+			l.onClose(s);
+		super.onClose(s);
 	}
 
 	public Layer getTopLayer(String name) {
@@ -106,6 +124,8 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 	}
 
 	public void removeLayer(Layer l) {
+		l.onClose();
+		l.onClose(input.screen);
 		if (layers.contains(l)) layers.remove(l);
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
@@ -137,7 +157,11 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 
 	public void removeRenderable(Renderable r) {
 		for (int i = 0; i < layers.size(); i++) {
-			if (layers.get(i).getRenderable() == r) layers.remove(i);
+			if (layers.get(i).getRenderable() == r) {
+				layers.get(i).onClose();
+				layers.get(i).onClose(input.screen);
+				layers.remove(i);
+			}
 		}
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
@@ -145,7 +169,11 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 
 	public void removeUpdatable(Updatable r) {
 		for (int i = 0; i < layers.size(); i++) {
-			if (layers.get(i).getUpdatable() == r) layers.remove(i);
+			if (layers.get(i).getUpdatable() == r) {
+				layers.get(i).onClose();
+				layers.get(i).onClose(input.screen);
+				layers.remove(i);
+			}
 		}
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
@@ -165,6 +193,12 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).stopsUpdating()) break;
 			++startIndex;
+		}
+		for (int i = 0; i < layers.size(); i++) {
+			Input in = layers.get(i).input;
+			if (in == null) continue;
+			if (in.isAvailable && i > startIndex) in.reset();
+			in.isAvailable = i <= startIndex;
 		}
 		return startIndex;
 	}
@@ -198,6 +232,10 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 	}
 
 	public void removeAllLayers() {
+		for (Layer l : layers) {
+			l.onClose();
+			l.onClose(input.screen);
+		}
 		layers.clear();
 		lastRendered = lastUpdated = 0;
 	}

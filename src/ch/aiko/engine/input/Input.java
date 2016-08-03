@@ -15,15 +15,25 @@ import ch.aiko.engine.graphics.Screen;
 
 public class Input {
 
+	public boolean isAvailable = true;
 	public Screen screen;
 	private int mouseX, mouseY, mxos, myos, mouseWheel;
 	private ArrayList<Integer> mouse_pressed = new ArrayList<Integer>();
 	private ArrayList<Integer> mouse_popped = new ArrayList<Integer>();
 	private ArrayList<Integer> keys = new ArrayList<Integer>();
 	private ArrayList<Integer> keys_popped = new ArrayList<Integer>();
+	private listeners l;
 
+	public void reset() {
+		mouseX = mouseY = mxos = myos = mouseWheel = 0;
+		mouse_pressed.clear();
+		mouse_popped.clear();
+		keys.clear();
+		keys_popped.clear();
+	}
+	
 	public Input(Screen w) {
-		listeners l = new listeners();
+		l = new listeners();
 
 		screen = w;
 
@@ -96,10 +106,12 @@ public class Input {
 		public void componentHidden(ComponentEvent e) {}
 
 		public void mouseWheelMoved(MouseWheelEvent e) {
+			if(!isAvailable) return;
 			mouseWheel += e.getPreciseWheelRotation();
 		}
 
 		public void mouseDragged(MouseEvent e) {
+			if(!isAvailable) return;
 			mouseX = e.getX();
 			mouseY = e.getY();
 			mxos = e.getXOnScreen();
@@ -107,6 +119,7 @@ public class Input {
 		}
 
 		public void mouseMoved(MouseEvent e) {
+			if(!isAvailable) return;
 			mouseX = e.getX();
 			mouseY = e.getY();
 			mxos = e.getXOnScreen();
@@ -116,6 +129,7 @@ public class Input {
 		public void mouseClicked(MouseEvent e) {}
 
 		public void mousePressed(MouseEvent e) {
+			if(!isAvailable) return;
 			if (!mouse_popped.contains(e.getButton())) {
 				mouse_pressed.add(e.getButton());
 				mouse_popped.add(e.getButton());
@@ -123,6 +137,7 @@ public class Input {
 		}
 
 		public void mouseReleased(MouseEvent e) {
+			if(!isAvailable) return;
 			if (mouse_pressed.contains(e.getButton())) mouse_pressed.remove((Object) e.getButton());
 			if (mouse_popped.contains(e.getButton())) mouse_popped.remove((Object) e.getButton());
 		}
@@ -134,6 +149,7 @@ public class Input {
 		public void keyTyped(KeyEvent e) {}
 
 		public void keyPressed(KeyEvent e) {
+			if(!isAvailable) return;
 			if (!keys_popped.contains(e.getKeyCode())) {
 				keys.add(e.getKeyCode());
 				keys_popped.add(e.getKeyCode());
@@ -141,11 +157,20 @@ public class Input {
 		}
 
 		public void keyReleased(KeyEvent e) {
+			if(!isAvailable) return;
 			while (keys.contains(e.getKeyCode()))
 				keys.remove((Object) e.getKeyCode());
 			while (keys_popped.contains(e.getKeyCode()))
 				keys_popped.remove((Object) e.getKeyCode());
 		}
+	}
+
+	public void remove(Screen s) {
+		s.removeKeyListener(l);
+		s.removeMouseListener(l);
+		s.removeMouseMotionListener(l);
+		s.removeMouseWheelListener(l);
+		s.removeComponentListener(l);
 	}
 
 }

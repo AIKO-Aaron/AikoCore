@@ -27,11 +27,9 @@ public class Screen extends Canvas {
 	protected boolean isClearing = true, init = false;
 	protected PixelImage pixelImg;
 	protected Renderer renderer;
-	// protected Input input;
 	protected boolean resetOffset = true;
 	protected ScheduledThreadPoolExecutor exe;
 	protected ScheduledFuture<?> update, render, disp;
-
 	private ArrayList<Layer> layers = new ArrayList<Layer>();
 	public PrintStream ps = System.out;
 
@@ -41,7 +39,6 @@ public class Screen extends Canvas {
 		setPreferredSize(new Dimension(width, height));
 		pixelImg = new PixelImage(width, height);
 		renderer = new Renderer(this);
-		//this.input = new Input(this);
 
 		new StopCommand().register();
 
@@ -129,6 +126,13 @@ public class Screen extends Canvas {
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).stopsUpdating()) break;
 			++startIndex;
+		}
+
+		for (int i = 0; i < layers.size(); i++) {
+			Input in = layers.get(i).input;
+			if (in == null) continue;
+			if (in.isAvailable && i > startIndex) in.reset();
+			in.isAvailable = i <= startIndex;
 		}
 
 		return startIndex;
@@ -225,6 +229,7 @@ public class Screen extends Canvas {
 	 */
 	public Layer addLayer(Layer l) {
 		if (l == null) return l;
+		l.onOpen(this);
 		l.setParent(null);
 		if (layers.size() <= 0) {
 			layers.add(l);
@@ -239,8 +244,6 @@ public class Screen extends Canvas {
 
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
-		
-		l.setInput(new Input(this));
 
 		l.onOpen();
 
@@ -269,6 +272,7 @@ public class Screen extends Canvas {
 	 */
 	public void removeLayer(Layer l) {
 		l.onClose();
+		l.onClose(this);
 		if (layers.contains(l)) layers.remove(l);
 		lastRendered = getLowestRendered();
 		lastUpdated = getLowestUpdated();
@@ -302,6 +306,7 @@ public class Screen extends Canvas {
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).getRenderable() == r) {
 				layers.get(i).onClose();
+				layers.get(i).onClose(this);
 				layers.remove(i);
 			}
 		}
@@ -313,6 +318,7 @@ public class Screen extends Canvas {
 		for (int i = 0; i < layers.size(); i++) {
 			if (layers.get(i).getUpdatable() == r) {
 				layers.get(i).onClose();
+				layers.get(i).onClose(this);
 				layers.remove(i);
 			}
 		}
@@ -373,7 +379,7 @@ public class Screen extends Canvas {
 	public void setClearing(boolean isClearing) {
 		this.isClearing = isClearing;
 	}
-	
+
 	public int getFrameWidth() {
 		return renderer.getWidth();
 	}
@@ -383,6 +389,10 @@ public class Screen extends Canvas {
 	}
 
 	public void removeAllLayers() {
+		for (Layer l : layers) {
+			l.onClose();
+			l.onClose(this);
+		}
 		layers.clear();
 		lastRendered = lastUpdated = 0;
 	}
