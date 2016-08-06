@@ -239,4 +239,9 @@ public abstract class LayerContainer extends Layer implements Renderable, Updata
 		layers.clear();
 		lastRendered = lastUpdated = 0;
 	}
+
+	@Override
+	public String toString() {
+		return "LayerContainer: [" + getName() + " @ " + getLevel() + " with " + layers.size() + " layers" + "]";
+	}
 }
