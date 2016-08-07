@@ -179,6 +179,7 @@ public class Renderer {
 
 	public void drawText(String text, Font f, int x, int y, int col) {
 		if (!supportAlpha) col |= 0xFF000000;
+		if(text.equalsIgnoreCase("")) return;
 		FontMetrics metrics = screen.getGraphics().getFontMetrics(f);
 		Rectangle2D r = metrics.getStringBounds(text, screen.getGraphics());
 		BufferedImage img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) r.getWidth(), (int) r.getHeight() * 2, Transparency.TRANSLUCENT);

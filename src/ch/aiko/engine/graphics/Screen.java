@@ -85,6 +85,10 @@ public class Screen extends Canvas {
 	public void setResetOffset(boolean b) {
 		resetOffset = b;
 	}
+	
+	public void resetOffset() {
+		renderer.setOffset(0, 0);
+	}
 
 	public final void preUpdate() {
 		try {
