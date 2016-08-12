@@ -57,6 +57,7 @@ public abstract class Layer {
 		};
 	}
 
+	protected Screen addedTo;
 	protected Layer parent;
 	protected Input input;
 	protected boolean isOpen = false;
@@ -73,6 +74,7 @@ public abstract class Layer {
 
 	public Layer(Screen s, Layer parent) {
 		this.parent = parent;
+		addedTo = s;
 	}
 
 	/**
@@ -132,6 +134,7 @@ public abstract class Layer {
 
 	public void onClose(Screen s) {
 		isOpen = false;
+		addedTo = s;
 		if (input != null) input.remove(s);
 	}
 
@@ -173,6 +176,10 @@ public abstract class Layer {
 
 	public void setInput(Input input) {
 		this.input = input;
+	}
+
+	public Screen getScreen() {
+		return addedTo;
 	}
 
 }
