@@ -66,6 +66,8 @@ public class Window extends JFrame {
 
 	public void quit() {
 		screen.stopThreads();
+		setVisible(false);
+		dispose();
 		System.exit(0);
 	}
 
