@@ -179,7 +179,7 @@ public class Renderer {
 
 	public void drawText(String text, Font f, int x, int y, int col) {
 		if (!supportAlpha) col |= 0xFF000000;
-		if(text.equalsIgnoreCase("")) return;
+		if (text.equalsIgnoreCase("")) return;
 		FontMetrics metrics = screen.getGraphics().getFontMetrics(f);
 		Rectangle2D r = metrics.getStringBounds(text, screen.getGraphics());
 		BufferedImage img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) r.getWidth(), (int) r.getHeight() * 2, Transparency.TRANSLUCENT);
@@ -259,6 +259,31 @@ public class Renderer {
 				pixelImg.setPixel(xx + xOffset, (int) yfor + i + yOffset, color);
 			}
 		}
+	}
+
+	public void drawOval(int x, int y, int w, int h, int color, int thickness) {
+		if (!supportAlpha) color |= 0xFF000000;
+		BufferedImage gr = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+		Graphics g = gr.getGraphics();
+		g.setColor(new Color(color));
+		g.fillOval(0, 0, w, h);
+		drawImage(gr, x, y);
+	}
+
+	public void fillOval(int x, int y, int w, int h, int color) {
+		if (!supportAlpha) color |= 0xFF000000;
+		BufferedImage gr = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(w, h, Transparency.TRANSLUCENT);
+		Graphics g = gr.getGraphics();
+		g.setColor(new Color(color));
+		g.fillOval(0, 0, w, h);
+		drawImage(gr, x, y);
+	}
+
+	public void drawOnGraphics(GraphicRenderable rendr, int x, int y) {
+		BufferedImage gr = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(rendr.getWidth(), rendr.getHeight(), Transparency.TRANSLUCENT);
+		Graphics g = gr.getGraphics();
+		rendr.render(g);
+		drawImage(gr, x, y);
 	}
 
 	public void drawGeometryObject(GeometryObject o) {
