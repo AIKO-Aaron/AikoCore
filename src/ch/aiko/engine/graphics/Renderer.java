@@ -267,6 +267,8 @@ public class Renderer {
 		Graphics g = gr.getGraphics();
 		g.setColor(new Color(color));
 		g.fillOval(0, 0, w, h);
+		g.setColor(new Color(0));
+		g.fillOval(thickness, thickness, w - 2 * thickness, h - 2 * thickness);
 		drawImage(gr, x, y);
 	}
 
