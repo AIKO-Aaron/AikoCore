@@ -6,10 +6,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -24,7 +23,7 @@ public class Screen extends Canvas {
 
 	public int ups, fps, lastFPS, lastUPS, clearColor = 0xFF000000;
 	protected Thread commandLineReader;
-	protected boolean isClearing = true, init = false;
+	protected boolean isClearing = true, init = false, running;
 	protected PixelImage pixelImg;
 	protected Renderer renderer;
 	protected boolean resetOffset = true;
@@ -85,7 +84,7 @@ public class Screen extends Canvas {
 	public void setResetOffset(boolean b) {
 		resetOffset = b;
 	}
-	
+
 	public void resetOffset() {
 		renderer.setOffset(0, 0);
 	}
@@ -179,18 +178,27 @@ public class Screen extends Canvas {
 
 	public Screen startCommandLineReader() {
 		commandLineReader = new Thread(() -> {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			while (isVisible()) {
+			Scanner scanner = new Scanner(System.in);
+			while (running) {
 				try {
-					String line = reader.readLine();
-					if (line == null || line.trim().replace(" ", "").equalsIgnoreCase("")) continue;
-					executeCommand(line, 5);
+					if (scanner.hasNext()) {
+						String line = scanner.next();
+						if (line == null || line.trim().replace(" ", "").equalsIgnoreCase("")) continue;
+						executeCommand(line, 5);
+					}
 				} catch (Exception e) {
 					e.printStackTrace(ps);
 				}
+				scanner.close();
 			}
 		});
 		commandLineReader.start();
+		return this;
+	}
+
+	public Screen stopCommandLineReader() {
+		running = false;
+		commandLineReader.interrupt();
 		return this;
 	}
 
