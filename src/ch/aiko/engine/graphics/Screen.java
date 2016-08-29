@@ -6,9 +6,10 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -178,18 +179,20 @@ public class Screen extends Canvas {
 
 	public Screen startCommandLineReader() {
 		commandLineReader = new Thread(() -> {
-			Scanner scanner = new Scanner(System.in);
-			while (running) {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			while (isVisible()) {
 				try {
-					if (scanner.hasNext()) {
-						String line = scanner.next();
+						String line = reader.readLine();
 						if (line == null || line.trim().replace(" ", "").equalsIgnoreCase("")) continue;
 						executeCommand(line, 5);
-					}
 				} catch (Exception e) {
 					e.printStackTrace(ps);
 				}
-				scanner.close();
+			}
+			try {
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 		commandLineReader.start();
