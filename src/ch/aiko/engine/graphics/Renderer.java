@@ -183,7 +183,7 @@ public class Renderer {
 		FontMetrics metrics = screen.getGraphics().getFontMetrics(f);
 		Rectangle2D r = metrics.getStringBounds(text, screen.getGraphics());
 		if(r.getWidth() <= 0 || r.getHeight() <= 0) return;
-		BufferedImage img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) r.getWidth(), (int) r.getHeight() * 2, Transparency.TRANSLUCENT);
+		BufferedImage img = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage((int) r.getWidth() * 2, (int) r.getHeight() * 2, Transparency.TRANSLUCENT);
 		Graphics g = img.getGraphics();
 		g.setColor(new Color(col));
 		g.setFont(f);

@@ -70,7 +70,10 @@ public class Test {
 
 	public static void render(Renderer r) {
 		// if(c1 != null) c1.render(r);
-		r.drawLine(0, 0, 100, 100, 0xFF00FF00, 5);
+		//r.drawLine(0, 0, 100, 100, 0xFF00FF00, 5);
+		for(int i = 0; i < r.getWidth() * r.getHeight(); i++) {
+			r.getPixels()[i] = rand.nextInt(0xFFFFFF) | 0xFF000000;
+		}
 	}
 
 	private static void test1() {
